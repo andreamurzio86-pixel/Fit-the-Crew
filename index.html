@@ -330,19 +330,27 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="sec" id="s-stats">
-    <div class="slabel" style="margin-top:14px">Questa settimana</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;margin-bottom:2px">
+      <div class="slabel" style="margin:0">Storico allenamenti</div>
+      <button onclick="exportCSV()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border:1.5px solid var(--border);border-radius:50px;background:var(--card);color:var(--text);font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation">⬇ Esporta CSV</button>
+      <button onclick="document.getElementById('csv-import-input').click()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border:1.5px solid var(--border);border-radius:50px;background:var(--card);color:var(--text);font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation">⬆ Importa CSV</button>
+      <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importCSV(this)">
+    </div>
+    <div id="sessions-list" style="margin-bottom:4px"></div>
+    <div class="slabel">Riepilogo totale</div>
+    <div class="stats-g" id="stats-totals">
+      <div class="sc"><div class="lb">Sessioni</div><div class="vl" id="st-count">0</div><div class="un">totali</div></div>
+      <div class="sc"><div class="lb">Ore totali</div><div class="vl" id="st-hours">0</div><div class="un">allenamento</div></div>
+      <div class="sc sw"><div class="lb">Volume totale</div><div class="vl" id="st-vol" style="font-size:40px">—</div><div class="un">kg stimati</div></div>
+      <div class="sc"><div class="lb">Striscia attuale</div><div class="vl" id="st-streak">0</div><div class="un">giorni 🔥</div></div>
+      <div class="sc"><div class="lb">Miglior striscia</div><div class="vl" id="st-best">0</div><div class="un">giorni</div></div>
+      <div class="sc"><div class="lb">Durata media</div><div class="vl" id="st-avg">—</div><div class="un">per sessione</div></div>
+    </div>
+    <div class="slabel">Questa settimana</div>
     <div class="week-g">
       <div style="font-size:12px;color:var(--muted);font-weight:700">Sessioni completate</div>
       <div class="week-bars" id="wbars"></div>
       <div style="display:flex;gap:5px" id="wdays"></div>
-    </div>
-    <div class="slabel">Riepilogo mensile</div>
-    <div class="stats-g">
-      <div class="sc"><div class="lb">Sessioni</div><div class="vl">14</div><div class="un">questo mese</div></div>
-      <div class="sc"><div class="lb">Ore totali</div><div class="vl">19.5</div><div class="un">allenamento</div></div>
-      <div class="sc sw"><div class="lb">Volume sollevato</div><div class="vl" style="font-size:44px">12.4t</div><div class="un">kg totali sollevati</div></div>
-      <div class="sc"><div class="lb">Striscia</div><div class="vl">4</div><div class="un">giorni 🔥</div></div>
-      <div class="sc"><div class="lb">Record</div><div class="vl">12</div><div class="un">striscia massima</div></div>
     </div>
   </div>
 <div id="bnav">
@@ -1475,9 +1483,157 @@ function addPR(id){
 // STATS
 // ═══════════════════════════════════
 function renderStats(){
-  const wd=[0,4,5,0,4,5,0],days2=['D','L','M','M','G','V','S'],ti=today.getDay(),mx=Math.max(...wd,1);
-  document.getElementById('wbars').innerHTML=days2.map((_,i)=>`<div class="wbw"><div class="wb ${i===ti?'td':wd[i]>0?'dn':''}" style="height:${Math.max(4,Math.round(wd[i]/mx*70))}px"></div></div>`).join('');
-  document.getElementById('wdays').innerHTML=days2.map((d,i)=>`<div class="wd" style="flex:1;${i===ti?'color:var(--red)':''}">${d}</div>`).join('');
+  const sessions=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
+
+  // ── Storico sessioni ─────────────────────────────────────────────
+  const list=document.getElementById('sessions-list');
+  if(sessions.length===0){
+    list.innerHTML=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;font-weight:700">Nessuna sessione salvata ancora.<br>Completa il primo allenamento! 💪</div>`;
+  } else {
+    list.innerHTML=sessions.slice(0,15).map(s=>{
+      const m=Math.floor(s.durationSec/60),sec=s.durationSec%60;
+      return`<div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:13px;font-weight:800">${s.dayName} <span style="color:var(--muted);font-weight:600;font-size:11px">· ${s.wod||''}</span></div>
+            <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:1px">${s.date||s.dateISO}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--red)">${m}:${sec<10?'0':''}${sec}</div>
+            <div style="font-size:10px;color:var(--muted);font-weight:700">${s.exDone||0}/${s.exTot||0} esercizi</div>
+          </div>
+        </div>
+        ${(s.volumeKg>0||s.note)?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+          ${s.volumeKg>0?`<span style="font-size:10px;background:var(--warm);border:1px solid var(--border);padding:2px 8px;border-radius:50px;font-weight:800">🏋️ ${s.volumeKg} kg</span>`:''}
+          ${s.note?`<span style="font-size:10px;background:#f3f0ff;color:var(--purple);padding:2px 8px;border-radius:50px;font-weight:700">💬 ${s.note.slice(0,30)}${s.note.length>30?'…':''}</span>`:''}
+        </div>`:''}
+      </div>`;
+    }).join('')+(sessions.length>15?`<div style="text-align:center;font-size:11px;color:var(--muted);font-weight:700;padding:6px">+${sessions.length-15} sessioni precedenti</div>`:'');
+  }
+
+  // ── Totali ───────────────────────────────────────────────────────
+  const totalSec=sessions.reduce((a,s)=>a+(s.durationSec||0),0);
+  const totalVol=sessions.reduce((a,s)=>a+(s.volumeKg||0),0);
+  document.getElementById('st-count').textContent=sessions.length;
+  document.getElementById('st-hours').textContent=(totalSec/3600).toFixed(1);
+  document.getElementById('st-vol').textContent=totalVol>0?(totalVol>=1000?(totalVol/1000).toFixed(1)+'t':totalVol+' kg'):'—';
+  document.getElementById('st-avg').textContent=sessions.length?Math.round(totalSec/sessions.length/60)+"'":'—';
+
+  // ── Striscia ─────────────────────────────────────────────────────
+  const dates=[...new Set(sessions.map(s=>s.dateISO))].sort().reverse();
+  let streak=0,best=0,cur=0,prev=new Date().toISOString().slice(0,10);
+  for(const d of dates){
+    const diff=Math.round((new Date(prev)-new Date(d))/86400000);
+    if(diff<=1){cur++;prev=d;}
+    else{best=Math.max(best,cur);cur=1;prev=d;}
+  }
+  best=Math.max(best,cur);
+  streak=dates.length>0&&dates[0]===new Date().toISOString().slice(0,10)?cur:0;
+  document.getElementById('st-streak').textContent=streak;
+  document.getElementById('st-best').textContent=best;
+
+  // ── Grafico settimana ─────────────────────────────────────────────
+  const days7=['D','L','M','M','G','V','S'];
+  const todayDow=new Date().getDay();
+  const weekCounts=Array(7).fill(0);
+  sessions.forEach(s=>{
+    const d=new Date(s.dateISO);
+    const daysAgo=Math.round((new Date()-d)/86400000);
+    if(daysAgo<7)weekCounts[d.getDay()]++;
+  });
+  const maxW=Math.max(...weekCounts,1);
+  document.getElementById('wbars').innerHTML=days7.map((_,i)=>`<div class="wbw"><div class="wb ${i===todayDow?'td':weekCounts[i]>0?'dn':''}" style="height:${Math.max(4,Math.round(weekCounts[i]/maxW*70))}px"></div></div>`).join('');
+  document.getElementById('wdays').innerHTML=days7.map((d,i)=>`<div class="wd" style="flex:1;${i===todayDow?'color:var(--red)':''}">${d}</div>`).join('');
+}
+
+function exportCSV(){
+  const sessions=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
+  if(!sessions.length){alert('Nessuna sessione da esportare.');return;}
+  const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
+  const hdr='Data,Giorno,Allenamento,Min,Sec,Esercizi fatti,Tot,Volume kg,WOD,Note';
+  const rows=sessions.map(s=>[esc(s.dateISO),esc(s.dayLabel),esc(s.dayName),
+    Math.floor(s.durationSec/60),s.durationSec,s.exDone||0,s.exTot||0,
+    s.volumeKg||0,esc(s.wod||''),esc(s.note||'')].join(','));
+  const csv=[hdr,...rows].join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='FIT_The_Crew_backup.csv';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function importCSV(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const text=ev.target.result.replace(/^\uFEFF/,''); // rimuovi BOM
+      const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+      if(lines.length<2){alert('File CSV vuoto o non valido.');return;}
+
+      // trova header row (ignora riga DETTAGLIO ESERCIZI se presente)
+      const hdrIdx=lines.findIndex(l=>l.startsWith('Data,'));
+      if(hdrIdx<0){alert('Formato CSV non riconosciuto.\nAssicurati di usare il file esportato da FIT The Crew.');return;}
+
+      const headers=lines[hdrIdx].split(',').map(h=>h.replace(/"/g,'').trim());
+      const dataLines=lines.slice(hdrIdx+1).filter(l=>!l.startsWith('"DETTAGLIO') && l.includes(','));
+
+      const parseVal=s=>s.replace(/^"|"$/g,'').replace(/""/g,'"').trim();
+
+      const imported=dataLines.map(line=>{
+        // gestisce virgole dentro campi quotati
+        const fields=[];
+        let cur='',inQ=false;
+        for(let i=0;i<line.length;i++){
+          const ch=line[i];
+          if(ch==='"'&&!inQ){inQ=true;}
+          else if(ch==='"'&&inQ&&line[i+1]==='"'){cur+='"';i++;}
+          else if(ch==='"'&&inQ){inQ=false;}
+          else if(ch===','&&!inQ){fields.push(cur);cur='';}
+          else cur+=ch;
+        }
+        fields.push(cur);
+        const get=i=>parseVal(fields[i]||'');
+        const durSec=parseInt(get(4))||((parseInt(get(3))||0)*60);
+        return{
+          dateISO:get(0),
+          dayLabel:get(1),
+          dayName:get(2),
+          durationSec:durSec,
+          date:get(0), // fallback
+          exDone:parseInt(get(5))||0,
+          exTot:parseInt(get(6))||0,
+          volumeKg:parseInt(get(7))||0,
+          wod:get(8),
+          note:get(9),
+          exercises:[],
+        };
+      }).filter(s=>s.dateISO&&s.dateISO.match(/^\d{4}-\d{2}-\d{2}$/));
+
+      if(!imported.length){alert('Nessuna sessione trovata nel file.');return;}
+
+      // merge: unisce con sessioni esistenti, evita duplicati per dateISO+dayLabel
+      const existing=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
+      const existingKeys=new Set(existing.map(s=>s.dateISO+'_'+s.dayLabel));
+      const newOnes=imported.filter(s=>!existingKeys.has(s.dateISO+'_'+s.dayLabel));
+      const merged=[...existing,...newOnes].sort((a,b)=>b.dateISO.localeCompare(a.dateISO));
+
+      localStorage.setItem('ftc_sessions',JSON.stringify(merged));
+      input.value=''; // reset input
+
+      const msg=newOnes.length>0
+        ?`✅ Importate ${newOnes.length} sessioni nuove.\n${imported.length-newOnes.length} già presenti (ignorate).`
+        :`ℹ️ Tutte le ${imported.length} sessioni erano già presenti.`;
+      alert(msg);
+      renderStats();
+    }catch(e){
+      console.error(e);
+      alert('Errore durante l\'importazione.\nAssicurati di usare il file CSV esportato da questa app.');
+    }
+  };
+  reader.readAsText(file,'UTF-8');
 }
 
 // ═══════════════════════════════════
