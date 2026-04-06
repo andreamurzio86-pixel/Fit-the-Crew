@@ -247,6 +247,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div>
       <div class="bb" style="font-size:22px;color:var(--red);letter-spacing:.5px">FIT THE CREW</div>
       <div id="nav-date" style="font-size:11px;color:var(--muted);font-weight:700"></div>
+      <div id="cycle-phase" style="font-size:10px;color:var(--red);font-weight:800;margin-top:1px"></div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <div id="train-tv-top" style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--muted);min-width:52px;text-align:right;line-height:1">0:00</div>
@@ -574,7 +575,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <!-- EX MODAL -->
 <div class="ov" id="ex-ov" onclick="if(event.target===this)closeExModal()">
   <div class="modal">
-    <div class="ex-anim" id="ex-emoji-box"></div>
     <div class="bb" style="font-size:28px;margin-bottom:2px" id="em-title"></div>
     <div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:10px" id="em-sub"></div>
     <a id="em-yt" href="#" target="_blank" rel="noopener" class="yt-link">
@@ -1048,78 +1048,261 @@ const YT={
 // PROGRAM
 // ═══════════════════════════════════
 const DAYS=[
-  {label:'Lun',name:'Allenamento A',focus:'Petto · Sbarra · Core',times:{wu:10,abs:12,bar:22,weights:35,wod:20,total:99},
+  // ─── LUNEDÌ: Spinta + Tirare orizzontale + Core ──────────────────────────────
+  {label:'A',name:'Spinta + Tirare',focus:'Petto · Dorsali · Core',times:{wu:10,abs:12,bar:20,weights:37,wod:20,total:99},
    blocks:[
-    {type:'abs',title:'Core & Addominali',color:'#6225c4',time:'12 min',exs:[
-      {id:'cr',name:'Crunch con rotazione',emoji:'🔄',yt:'default',sets:3,reps:'20',muscle:'Core obliquo'},
-      {id:'lr',name:'Leg Raise (sbarra)',emoji:'🦵',yt:'default',sets:3,reps:'15',muscle:'Add. bassi'},
-      {id:'rt',name:'Russian Twist con peso',emoji:'🔀',yt:'default',sets:3,reps:'30',muscle:'Obliqui'},
-    ]},
-    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'22 min',exs:[
-      {id:'pu',name:'Trazioni alla sbarra',emoji:'💪',yt:'pullup',sets:5,reps:'Max',muscle:'Dorsali · bicipiti',key:true},
-      {id:'dip',name:'Dip alle parallele',emoji:'🤸',yt:'dip',sets:4,reps:'12-15',muscle:'Petto · tricipiti'},
-      {id:'lsa',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'20s',muscle:'Core · tricipiti'},
-    ]},
-    {type:'weights',title:'Pesi',color:'#a16207',time:'35 min',exs:[
-      {id:'bp',name:'Panca piana',emoji:'🏋️',yt:'bench',sets:5,reps:'5',muscle:'Petto · tricipiti',key:true},
-      {id:'mp',name:'Military Press',emoji:'🔝',yt:'military',sets:4,reps:'6-8',muscle:'Spalle · tricipiti',key:true},
-      {id:'ro',name:'Rematore bilanciere',emoji:'🚣',yt:'rowing',sets:4,reps:'8-10',muscle:'Dorsali · bicipiti'},
-    ]},
+    {type:'abs',title:'Core & Addominali',color:'#6225c4',time:'12 min',
+     weekExs:[
+      // sett 1-2 (ipertrofia)
+      [{id:'cr',name:'Crunch con rotazione',emoji:'🔄',yt:'default',sets:3,reps:'20',muscle:'Core'},
+       {id:'lr',name:'Leg Raise sbarra',emoji:'🦵',yt:'default',sets:3,reps:'15',muscle:'Add. bassi'},
+       {id:'rt',name:'Russian Twist con peso',emoji:'🔀',yt:'default',sets:3,reps:'30',muscle:'Obliqui'}],
+      // sett 3-4 (forza-ipertrofia)
+      [{id:'cr',name:'Crunch con rotazione',emoji:'🔄',yt:'default',sets:4,reps:'15',muscle:'Core'},
+       {id:'lr',name:'Leg Raise sbarra',emoji:'🦵',yt:'default',sets:4,reps:'12',muscle:'Add. bassi'},
+       {id:'rt',name:'Russian Twist con peso',emoji:'🔀',yt:'default',sets:3,reps:'20',muscle:'Obliqui'}],
+      // sett 5 (forza)
+      [{id:'cr',name:'Crunch con peso',emoji:'🔄',yt:'default',sets:5,reps:'10',muscle:'Core'},
+       {id:'lr',name:'Toes to Bar',emoji:'🦵',yt:'default',sets:4,reps:'10',muscle:'Add. bassi'},
+       {id:'rt',name:'Ab Wheel Rollout',emoji:'🔀',yt:'default',sets:3,reps:'8',muscle:'Core'}],
+      // sett 6 (scarico)
+      [{id:'cr',name:'Crunch classico',emoji:'🔄',yt:'default',sets:3,reps:'15',muscle:'Core'},
+       {id:'lr',name:'Leg Raise sbarra',emoji:'🦵',yt:'default',sets:3,reps:'10',muscle:'Add. bassi'},
+       {id:'rt',name:'Russian Twist leggero',emoji:'🔀',yt:'default',sets:2,reps:'20',muscle:'Obliqui'}],
+     ]},
+    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'20 min',
+     weekExs:[
+      [{id:'pu',name:'Trazioni ampia',emoji:'💪',yt:'pullup',sets:5,reps:'Max',muscle:'Dorsali',key:true},
+       {id:'dip',name:'Dip parallele',emoji:'🤸',yt:'dip',sets:4,reps:'12-15',muscle:'Petto'},
+       {id:'lsa',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'20s',muscle:'Core'}],
+      [{id:'pu',name:'Trazioni con zavorra',emoji:'💪',yt:'pullup',sets:5,reps:'6-8',muscle:'Dorsali',key:true},
+       {id:'dip',name:'Dip con zavorra',emoji:'🤸',yt:'dip',sets:4,reps:'8-10',muscle:'Petto'},
+       {id:'lsa',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'30s',muscle:'Core'}],
+      [{id:'pu',name:'Trazioni massimale',emoji:'💪',yt:'pullup',sets:5,reps:'3-5',muscle:'Dorsali',key:true},
+       {id:'dip',name:'Dip massimale',emoji:'🤸',yt:'dip',sets:4,reps:'5-6',muscle:'Petto'},
+       {id:'lsa',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'30s',muscle:'Core'}],
+      [{id:'pu',name:'Trazioni leggere',emoji:'💪',yt:'pullup',sets:3,reps:'8',muscle:'Dorsali',key:true},
+       {id:'dip',name:'Dip leggere',emoji:'🤸',yt:'dip',sets:3,reps:'10',muscle:'Petto'},
+       {id:'lsa',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:2,reps:'20s',muscle:'Core'}],
+     ]},
+    {type:'weights',title:'Pesi',color:'#a16207',time:'37 min',
+     weekExs:[
+      [{id:'bp',name:'Panca piana',emoji:'🏋️',yt:'bench',sets:4,reps:'10-12',muscle:'Petto',key:true},
+       {id:'mp',name:'Military Press',emoji:'🔝',yt:'military',sets:3,reps:'10-12',muscle:'Spalle',key:true},
+       {id:'ro',name:'Rematore bilanciere',emoji:'🚣',yt:'rowing',sets:4,reps:'10-12',muscle:'Dorsali'},
+       {id:'pec',name:'Croci ai cavi',emoji:'🦋',yt:'cable fly',sets:3,reps:'15',muscle:'Petto'}],
+      [{id:'bp',name:'Panca piana',emoji:'🏋️',yt:'bench',sets:4,reps:'6-8',muscle:'Petto',key:true},
+       {id:'mp',name:'Military Press',emoji:'🔝',yt:'military',sets:4,reps:'6-8',muscle:'Spalle',key:true},
+       {id:'ro',name:'Rematore bilanciere',emoji:'🚣',yt:'rowing',sets:4,reps:'8',muscle:'Dorsali'},
+       {id:'pec',name:'Panca inclinata manubri',emoji:'🏋️',yt:'incline bench',sets:3,reps:'10',muscle:'Petto'}],
+      [{id:'bp',name:'Panca piana pesante',emoji:'🏋️',yt:'bench',sets:5,reps:'3-5',muscle:'Petto',key:true},
+       {id:'mp',name:'Military Press pesante',emoji:'🔝',yt:'military',sets:4,reps:'4-5',muscle:'Spalle',key:true},
+       {id:'ro',name:'Rematore pesante',emoji:'🚣',yt:'rowing',sets:4,reps:'6',muscle:'Dorsali'},
+       {id:'pec',name:'Panca manubri piatta',emoji:'🏋️',yt:'dumbbell bench',sets:3,reps:'8',muscle:'Petto'}],
+      [{id:'bp',name:'Panca piana scarico',emoji:'🏋️',yt:'bench',sets:3,reps:'8',muscle:'Petto',key:true},
+       {id:'mp',name:'Military Press scarico',emoji:'🔝',yt:'military',sets:3,reps:'8',muscle:'Spalle',key:true},
+       {id:'ro',name:'Rematore manubri',emoji:'🚣',yt:'rowing',sets:3,reps:'12',muscle:'Dorsali'},
+       {id:'pec',name:'Croci manubri',emoji:'🦋',yt:'dumbbell fly',sets:2,reps:'15',muscle:'Petto'}],
+     ]},
     {type:'wod',title:'WOD CrossFit',color:'#b59000',time:'20 min'},
    ]},
-  {label:'Mar',name:'Allenamento B',focus:'Gambe · Sbarra · Core',times:{wu:12,abs:12,bar:18,weights:42,wod:20,total:104},
+
+  // ─── MARTEDÌ: Gambe + Tirare verticale ────────────────────────────────────
+  {label:'B',name:'Gambe + Tirare',focus:'Squat · Stacchi · Dorsali',times:{wu:12,abs:12,bar:18,weights:42,wod:20,total:104},
    blocks:[
-    {type:'abs',title:'Core & Addominali',color:'#6225c4',time:'12 min',exs:[
-      {id:'pl',name:'Plank Laterale',emoji:'🧱',yt:'default',sets:4,reps:'30s/lato',muscle:'Obliqui'},
-      {id:'t2b',name:'Toes to Bar',emoji:'🎯',yt:'default',sets:3,reps:'10',muscle:'Addominali'},
-      {id:'rt2',name:'Russian Twist',emoji:'🔀',yt:'default',sets:3,reps:'30',muscle:'Obliqui'},
-    ]},
-    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'18 min',exs:[
-      {id:'pu2',name:'Trazioni presa stretta',emoji:'🤜',yt:'pullup',sets:5,reps:'Max',muscle:'Bicipiti · dorsali',key:true},
-      {id:'dip2',name:'Dip alle parallele',emoji:'🤸',yt:'dip',sets:4,reps:'12',muscle:'Petto · tricipiti'},
-      {id:'mu',name:'Muscle-up (tentativo)',emoji:'🌟',yt:'muscleup',sets:3,reps:'3-5',muscle:'Full upper body'},
-    ]},
-    {type:'weights',title:'Pesi',color:'#a16207',time:'42 min',exs:[
-      {id:'sq',name:'Squat',emoji:'🦵',yt:'squat',sets:5,reps:'5',muscle:'Quadricipiti · glutei',key:true},
-      {id:'dl',name:'Stacchi da terra',emoji:'⚙️',yt:'deadlift',sets:4,reps:'5',muscle:'Catena posteriore',key:true},
-      {id:'ro2',name:'Rematore manubri',emoji:'🚣',yt:'rowing',sets:3,reps:'10-12',muscle:'Dorsali'},
-    ]},
+    {type:'abs',title:'Core & Addominali',color:'#6225c4',time:'12 min',
+     weekExs:[
+      [{id:'pl',name:'Plank laterale',emoji:'🧱',yt:'default',sets:3,reps:'30s/lato',muscle:'Obliqui'},
+       {id:'t2b',name:'Toes to Bar',emoji:'🎯',yt:'default',sets:3,reps:'10',muscle:'Addominali'},
+       {id:'rt2',name:'Russian Twist',emoji:'🔀',yt:'default',sets:3,reps:'30',muscle:'Obliqui'}],
+      [{id:'pl',name:'Plank laterale con sollevamento',emoji:'🧱',yt:'default',sets:4,reps:'20s/lato',muscle:'Obliqui'},
+       {id:'t2b',name:'Toes to Bar',emoji:'🎯',yt:'default',sets:4,reps:'8',muscle:'Addominali'},
+       {id:'rt2',name:'Russian Twist pesante',emoji:'🔀',yt:'default',sets:3,reps:'20',muscle:'Obliqui'}],
+      [{id:'pl',name:'Plank con zavorra',emoji:'🧱',yt:'default',sets:4,reps:'30s',muscle:'Core'},
+       {id:'t2b',name:'Toes to Bar',emoji:'🎯',yt:'default',sets:4,reps:'6',muscle:'Addominali'},
+       {id:'rt2',name:'Ab Wheel',emoji:'🔀',yt:'default',sets:3,reps:'8',muscle:'Core'}],
+      [{id:'pl',name:'Plank classico',emoji:'🧱',yt:'default',sets:3,reps:'30s',muscle:'Core'},
+       {id:'t2b',name:'Knee Raise',emoji:'🎯',yt:'default',sets:3,reps:'12',muscle:'Addominali'},
+       {id:'rt2',name:'Russian Twist leggero',emoji:'🔀',yt:'default',sets:2,reps:'20',muscle:'Obliqui'}],
+     ]},
+    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'18 min',
+     weekExs:[
+      [{id:'pu2',name:'Trazioni presa stretta',emoji:'🤜',yt:'pullup',sets:4,reps:'10-12',muscle:'Bicipiti',key:true},
+       {id:'dip2',name:'Dip parallele',emoji:'🤸',yt:'dip',sets:3,reps:'12-15',muscle:'Petto'},
+       {id:'mu',name:'Muscle-up (tentativo)',emoji:'🌟',yt:'muscleup',sets:3,reps:'3-5',muscle:'Full body'}],
+      [{id:'pu2',name:'Trazioni presa stretta zavorra',emoji:'🤜',yt:'pullup',sets:5,reps:'6-8',muscle:'Bicipiti',key:true},
+       {id:'dip2',name:'Dip con zavorra',emoji:'🤸',yt:'dip',sets:3,reps:'8-10',muscle:'Petto'},
+       {id:'mu',name:'Muscle-up',emoji:'🌟',yt:'muscleup',sets:3,reps:'3-5',muscle:'Full body'}],
+      [{id:'pu2',name:'Trazioni zavorra massimale',emoji:'🤜',yt:'pullup',sets:5,reps:'4-5',muscle:'Bicipiti',key:true},
+       {id:'dip2',name:'Dip zavorra massimale',emoji:'🤸',yt:'dip',sets:4,reps:'5-6',muscle:'Petto'},
+       {id:'mu',name:'Muscle-up pesante',emoji:'🌟',yt:'muscleup',sets:3,reps:'2-3',muscle:'Full body'}],
+      [{id:'pu2',name:'Trazioni leggere',emoji:'🤜',yt:'pullup',sets:3,reps:'8',muscle:'Bicipiti',key:true},
+       {id:'dip2',name:'Dip leggere',emoji:'🤸',yt:'dip',sets:2,reps:'10',muscle:'Petto'},
+       {id:'mu',name:'Muscle-up tecnica',emoji:'🌟',yt:'muscleup',sets:2,reps:'3',muscle:'Full body'}],
+     ]},
+    {type:'weights',title:'Pesi',color:'#a16207',time:'42 min',
+     weekExs:[
+      [{id:'sq',name:'Squat',emoji:'🦵',yt:'squat',sets:4,reps:'10-12',muscle:'Gambe',key:true},
+       {id:'dl',name:'Stacchi rumeni',emoji:'⚙️',yt:'rdl',sets:3,reps:'10-12',muscle:'Posteriore',key:true},
+       {id:'lp',name:'Leg Press',emoji:'🦵',yt:'leg press',sets:3,reps:'12-15',muscle:'Gambe'},
+       {id:'lc',name:'Leg Curl',emoji:'🦵',yt:'leg curl',sets:3,reps:'12-15',muscle:'Femorali'}],
+      [{id:'sq',name:'Squat',emoji:'🦵',yt:'squat',sets:4,reps:'6-8',muscle:'Gambe',key:true},
+       {id:'dl',name:'Stacchi da terra',emoji:'⚙️',yt:'deadlift',sets:4,reps:'5',muscle:'Posteriore',key:true},
+       {id:'lp',name:'Leg Press pesante',emoji:'🦵',yt:'leg press',sets:3,reps:'10',muscle:'Gambe'},
+       {id:'lc',name:'Leg Curl pesante',emoji:'🦵',yt:'leg curl',sets:3,reps:'10',muscle:'Femorali'}],
+      [{id:'sq',name:'Squat pesante',emoji:'🦵',yt:'squat',sets:5,reps:'3-5',muscle:'Gambe',key:true},
+       {id:'dl',name:'Stacchi pesanti',emoji:'⚙️',yt:'deadlift',sets:5,reps:'3',muscle:'Posteriore',key:true},
+       {id:'lp',name:'Leg Press massimale',emoji:'🦵',yt:'leg press',sets:3,reps:'8',muscle:'Gambe'},
+       {id:'lc',name:'Leg Curl',emoji:'🦵',yt:'leg curl',sets:3,reps:'8',muscle:'Femorali'}],
+      [{id:'sq',name:'Squat scarico',emoji:'🦵',yt:'squat',sets:3,reps:'8',muscle:'Gambe',key:true},
+       {id:'dl',name:'Stacchi rumeni leggeri',emoji:'⚙️',yt:'rdl',sets:3,reps:'10',muscle:'Posteriore',key:true},
+       {id:'lp',name:'Leg Press leggera',emoji:'🦵',yt:'leg press',sets:2,reps:'12',muscle:'Gambe'},
+       {id:'lc',name:'Leg Curl leggero',emoji:'🦵',yt:'leg curl',sets:2,reps:'12',muscle:'Femorali'}],
+     ]},
     {type:'wod',title:'WOD CrossFit',color:'#b59000',time:'20 min'},
    ]},
-  {label:'Gio',name:'Allenamento C',focus:'Panca · Military · Sbarra',times:{wu:10,bar:24,weights:40,wod:20,total:94},
+
+  // ─── GIOVEDÌ: Spinta verticale + Accessori ──────────────────────────────────
+  {label:'C',name:'Spinta verticale',focus:'Military · Trazioni · Accessori',times:{wu:10,bar:24,weights:40,wod:20,total:94},
    blocks:[
-    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'24 min',exs:[
-      {id:'pu3',name:'Trazioni esplosive',emoji:'⚡',yt:'pullup',sets:5,reps:'Max',muscle:'Dorsali · bicipiti',key:true},
-      {id:'mu2',name:'Muscle-up',emoji:'🌟',yt:'muscleup',sets:3,reps:'3-5',muscle:'Full upper body'},
-      {id:'lsit2',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'30s',muscle:'Core'},
-    ]},
-    {type:'weights',title:'Pesi',color:'#a16207',time:'40 min',exs:[
-      {id:'bp2',name:'Panca piana 5×5',emoji:'🏋️',yt:'bench',sets:5,reps:'5',muscle:'Petto · tricipiti',key:true},
-      {id:'mp2',name:'Military Press',emoji:'🔝',yt:'military',sets:4,reps:'6-8',muscle:'Spalle',key:true},
-      {id:'ro3',name:'Rematore bilanciere',emoji:'🚣',yt:'rowing',sets:4,reps:'8',muscle:'Dorsali'},
-      {id:'dip3',name:'Dip con peso',emoji:'🤸',yt:'dip',sets:3,reps:'10-12',muscle:'Petto · tricipiti'},
-    ]},
+    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'24 min',
+     weekExs:[
+      [{id:'pu3',name:'Trazioni esplosive',emoji:'⚡',yt:'pullup',sets:4,reps:'6-8',muscle:'Dorsali',key:true},
+       {id:'dip3',name:'Dip parallele',emoji:'🤸',yt:'dip',sets:3,reps:'12-15',muscle:'Petto'},
+       {id:'lsit2',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'20s',muscle:'Core'}],
+      [{id:'pu3',name:'Trazioni zavorra',emoji:'⚡',yt:'pullup',sets:5,reps:'5-6',muscle:'Dorsali',key:true},
+       {id:'dip3',name:'Dip zavorra',emoji:'🤸',yt:'dip',sets:4,reps:'8-10',muscle:'Petto'},
+       {id:'lsit2',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'30s',muscle:'Core'}],
+      [{id:'pu3',name:'Trazioni massimale',emoji:'⚡',yt:'pullup',sets:5,reps:'3-4',muscle:'Dorsali',key:true},
+       {id:'dip3',name:'Dip massimale',emoji:'🤸',yt:'dip',sets:4,reps:'5-6',muscle:'Petto'},
+       {id:'lsit2',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:3,reps:'30s',muscle:'Core'}],
+      [{id:'pu3',name:'Trazioni leggere',emoji:'⚡',yt:'pullup',sets:3,reps:'8',muscle:'Dorsali',key:true},
+       {id:'dip3',name:'Dip leggere',emoji:'🤸',yt:'dip',sets:3,reps:'10',muscle:'Petto'},
+       {id:'lsit2',name:'L-sit Hold',emoji:'⚡',yt:'lsit',sets:2,reps:'20s',muscle:'Core'}],
+     ]},
+    {type:'weights',title:'Pesi',color:'#a16207',time:'40 min',
+     weekExs:[
+      [{id:'mp2',name:'Military Press',emoji:'🔝',yt:'military',sets:4,reps:'10-12',muscle:'Spalle',key:true},
+       {id:'bp3',name:'Panca inclinata',emoji:'🏋️',yt:'incline bench',sets:3,reps:'10-12',muscle:'Petto'},
+       {id:'lr2',name:'Lat Machine',emoji:'🚣',yt:'lat pulldown',sets:4,reps:'10-12',muscle:'Dorsali'},
+       {id:'cu',name:'Curl bilanciere',emoji:'💪',yt:'bicep curl',sets:3,reps:'12',muscle:'Bicipiti'},
+       {id:'sk',name:'Skull Crusher',emoji:'💀',yt:'skull crusher',sets:3,reps:'12',muscle:'Tricipiti'}],
+      [{id:'mp2',name:'Military Press',emoji:'🔝',yt:'military',sets:4,reps:'6-8',muscle:'Spalle',key:true},
+       {id:'bp3',name:'Panca inclinata pesante',emoji:'🏋️',yt:'incline bench',sets:4,reps:'8',muscle:'Petto'},
+       {id:'lr2',name:'Lat Machine pesante',emoji:'🚣',yt:'lat pulldown',sets:4,reps:'8',muscle:'Dorsali'},
+       {id:'cu',name:'Curl manubri',emoji:'💪',yt:'dumbbell curl',sets:3,reps:'10',muscle:'Bicipiti'},
+       {id:'sk',name:'Skull Crusher pesante',emoji:'💀',yt:'skull crusher',sets:3,reps:'10',muscle:'Tricipiti'}],
+      [{id:'mp2',name:'Military Press pesante',emoji:'🔝',yt:'military',sets:5,reps:'3-5',muscle:'Spalle',key:true},
+       {id:'bp3',name:'Panca inclinata massimale',emoji:'🏋️',yt:'incline bench',sets:4,reps:'5-6',muscle:'Petto'},
+       {id:'lr2',name:'Lat Machine massimale',emoji:'🚣',yt:'lat pulldown',sets:4,reps:'6',muscle:'Dorsali'},
+       {id:'cu',name:'Curl bilanciere pesante',emoji:'💪',yt:'bicep curl',sets:3,reps:'8',muscle:'Bicipiti'},
+       {id:'sk',name:'Skull Crusher massimale',emoji:'💀',yt:'skull crusher',sets:3,reps:'8',muscle:'Tricipiti'}],
+      [{id:'mp2',name:'Military Press scarico',emoji:'🔝',yt:'military',sets:3,reps:'8',muscle:'Spalle',key:true},
+       {id:'bp3',name:'Panca inclinata manubri',emoji:'🏋️',yt:'incline bench',sets:3,reps:'10',muscle:'Petto'},
+       {id:'lr2',name:'Lat Machine',emoji:'🚣',yt:'lat pulldown',sets:3,reps:'12',muscle:'Dorsali'},
+       {id:'cu',name:'Curl manubri leggero',emoji:'💪',yt:'dumbbell curl',sets:2,reps:'12',muscle:'Bicipiti'},
+       {id:'sk',name:'Push down cavi',emoji:'💀',yt:'tricep pushdown',sets:2,reps:'15',muscle:'Tricipiti'}],
+     ]},
     {type:'wod',title:'WOD CrossFit',color:'#b59000',time:'20 min'},
    ]},
-  {label:'Ven',name:'Allenamento D',focus:'Squat · Stacchi · Full body',times:{wu:12,abs:12,bar:18,weights:40,wod:22,total:104},
+
+  // ─── VENERDÌ: Full body + Forza ─────────────────────────────────────────────
+  {label:'D',name:'Full Body + Forza',focus:'Squat · Panca · Verticale',times:{wu:12,abs:12,bar:18,weights:40,wod:22,total:104},
    blocks:[
-    {type:'abs',title:'Core & Addominali',color:'#6225c4',time:'12 min',exs:[
-      {id:'lr3',name:'Leg Raise appesi',emoji:'🦵',yt:'default',sets:4,reps:'15',muscle:'Add. bassi'},
-      {id:'pl2',name:'Plank con tocco spalle',emoji:'🧱',yt:'default',sets:3,reps:'30s',muscle:'Core'},
-      {id:'crl',name:'Crunch classico',emoji:'🔄',yt:'default',sets:3,reps:'25',muscle:'Retto addominale'},
-    ]},
-    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'18 min',exs:[
-      {id:'pu4',name:'Trazioni supinazione',emoji:'💪',yt:'pullup',sets:5,reps:'Max',muscle:'Bicipiti · dorsali',key:true},
-      {id:'dip4',name:'Dip pesante',emoji:'🤸',yt:'dip',sets:4,reps:'8-10',muscle:'Tricipiti · petto'},
-    ]},
-    {type:'weights',title:'Pesi',color:'#a16207',time:'40 min',exs:[
-      {id:'sq2',name:'Squat pesante',emoji:'🦵',yt:'squat',sets:5,reps:'3',muscle:'Gambe · glutei',key:true},
-      {id:'dl2',name:'Stacchi pesanti',emoji:'⚙️',yt:'deadlift',sets:5,reps:'3',muscle:'Posteriore · schiena',key:true},
-      {id:'mp3',name:'Military Press',emoji:'🔝',yt:'military',sets:3,reps:'8',muscle:'Spalle',key:true},
-    ]},
+    {type:'abs',title:'Core & Addominali',color:'#6225c4',time:'12 min',
+     weekExs:[
+      [{id:'lr3',name:'Leg Raise appesi',emoji:'🦵',yt:'default',sets:3,reps:'15',muscle:'Add. bassi'},
+       {id:'pl2',name:'Plank toccando spalle',emoji:'🧱',yt:'default',sets:3,reps:'30s',muscle:'Core'},
+       {id:'crl',name:'Crunch classico',emoji:'🔄',yt:'default',sets:3,reps:'25',muscle:'Retto add.'}],
+      [{id:'lr3',name:'Leg Raise con zavorra',emoji:'🦵',yt:'default',sets:4,reps:'12',muscle:'Add. bassi'},
+       {id:'pl2',name:'Plank con sollevamento gamba',emoji:'🧱',yt:'default',sets:3,reps:'30s',muscle:'Core'},
+       {id:'crl',name:'Crunch con peso',emoji:'🔄',yt:'default',sets:3,reps:'15',muscle:'Retto add.'}],
+      [{id:'lr3',name:'Toes to Bar',emoji:'🦵',yt:'default',sets:4,reps:'10',muscle:'Add. bassi'},
+       {id:'pl2',name:'Plank zavorra',emoji:'🧱',yt:'default',sets:4,reps:'30s',muscle:'Core'},
+       {id:'crl',name:'Ab Wheel',emoji:'🔄',yt:'default',sets:3,reps:'8',muscle:'Core'}],
+      [{id:'lr3',name:'Knee Raise',emoji:'🦵',yt:'default',sets:3,reps:'12',muscle:'Add. bassi'},
+       {id:'pl2',name:'Plank classico',emoji:'🧱',yt:'default',sets:2,reps:'30s',muscle:'Core'},
+       {id:'crl',name:'Crunch leggero',emoji:'🔄',yt:'default',sets:2,reps:'15',muscle:'Retto add.'}],
+     ]},
+    {type:'bar',title:'Calisthenics Sbarra',color:'#1455a4',time:'18 min',
+     weekExs:[
+      [{id:'pu4',name:'Trazioni supinazione',emoji:'💪',yt:'pullup',sets:4,reps:'10-12',muscle:'Bicipiti',key:true},
+       {id:'dip4',name:'Dip pesante',emoji:'🤸',yt:'dip',sets:3,reps:'10-12',muscle:'Tricipiti'},
+       {id:'rw',name:'Ring Row',emoji:'⭕',yt:'ring row',sets:3,reps:'12',muscle:'Dorsali'}],
+      [{id:'pu4',name:'Trazioni supinazione zavorra',emoji:'💪',yt:'pullup',sets:5,reps:'6-8',muscle:'Bicipiti',key:true},
+       {id:'dip4',name:'Dip zavorra',emoji:'🤸',yt:'dip',sets:4,reps:'8',muscle:'Tricipiti'},
+       {id:'rw',name:'Ring Row pesante',emoji:'⭕',yt:'ring row',sets:3,reps:'10',muscle:'Dorsali'}],
+      [{id:'pu4',name:'Trazioni sup. massimale',emoji:'💪',yt:'pullup',sets:5,reps:'4-5',muscle:'Bicipiti',key:true},
+       {id:'dip4',name:'Dip massimale',emoji:'🤸',yt:'dip',sets:4,reps:'5-6',muscle:'Tricipiti'},
+       {id:'rw',name:'Ring Row massimale',emoji:'⭕',yt:'ring row',sets:3,reps:'8',muscle:'Dorsali'}],
+      [{id:'pu4',name:'Trazioni leggere',emoji:'💪',yt:'pullup',sets:3,reps:'8',muscle:'Bicipiti',key:true},
+       {id:'dip4',name:'Dip leggere',emoji:'🤸',yt:'dip',sets:2,reps:'10',muscle:'Tricipiti'},
+       {id:'rw',name:'Ring Row leggero',emoji:'⭕',yt:'ring row',sets:2,reps:'12',muscle:'Dorsali'}],
+     ]},
+    {type:'weights',title:'Pesi',color:'#a16207',time:'40 min',
+     weekExs:[
+      [{id:'sq2',name:'Squat',emoji:'🦵',yt:'squat',sets:4,reps:'10-12',muscle:'Gambe',key:true},
+       {id:'dl2',name:'Stacchi da terra',emoji:'⚙️',yt:'deadlift',sets:3,reps:'8',muscle:'Posteriore',key:true},
+       {id:'mp3',name:'Military Press',emoji:'🔝',yt:'military',sets:3,reps:'10-12',muscle:'Spalle',key:true},
+       {id:'lge',name:'Affondi manubri',emoji:'🦵',yt:'lunges',sets:3,reps:'12/lato',muscle:'Gambe'}],
+      [{id:'sq2',name:'Squat pesante',emoji:'🦵',yt:'squat',sets:4,reps:'6-8',muscle:'Gambe',key:true},
+       {id:'dl2',name:'Stacchi da terra',emoji:'⚙️',yt:'deadlift',sets:4,reps:'5',muscle:'Posteriore',key:true},
+       {id:'mp3',name:'Military Press',emoji:'🔝',yt:'military',sets:4,reps:'6-8',muscle:'Spalle',key:true},
+       {id:'lge',name:'Bulgarian Split Squat',emoji:'🦵',yt:'bulgarian split squat',sets:3,reps:'8/lato',muscle:'Gambe'}],
+      [{id:'sq2',name:'Squat massimale',emoji:'🦵',yt:'squat',sets:5,reps:'3-5',muscle:'Gambe',key:true},
+       {id:'dl2',name:'Stacchi massimali',emoji:'⚙️',yt:'deadlift',sets:5,reps:'2-3',muscle:'Posteriore',key:true},
+       {id:'mp3',name:'Military Press massimale',emoji:'🔝',yt:'military',sets:4,reps:'3-5',muscle:'Spalle',key:true},
+       {id:'lge',name:'Leg Press pesante',emoji:'🦵',yt:'leg press',sets:3,reps:'8',muscle:'Gambe'}],
+      [{id:'sq2',name:'Squat scarico',emoji:'🦵',yt:'squat',sets:3,reps:'8',muscle:'Gambe',key:true},
+       {id:'dl2',name:'Stacchi leggeri',emoji:'⚙️',yt:'deadlift',sets:3,reps:'6',muscle:'Posteriore',key:true},
+       {id:'mp3',name:'Military Press leggera',emoji:'🔝',yt:'military',sets:3,reps:'8',muscle:'Spalle',key:true},
+       {id:'lge',name:'Affondi corpo libero',emoji:'🦵',yt:'lunges',sets:2,reps:'12/lato',muscle:'Gambe'}],
+     ]},
     {type:'wod',title:'WOD CrossFit',color:'#b59000',time:'22 min'},
    ]},
 ];
+
+// ── Calcola la settimana del ciclo (1-6) dalla prima apertura dell'app ──
+function getCycleWeek(){
+  let startDate=localStorage.getItem('ftc_cycle_start');
+  if(!startDate){
+    // prima apertura: inizia da domani (lunedì del ciclo)
+    const tomorrow=new Date();
+    tomorrow.setDate(tomorrow.getDate()+1);
+    tomorrow.setHours(0,0,0,0);
+    startDate=tomorrow.toISOString().slice(0,10);
+    localStorage.setItem('ftc_cycle_start',startDate);
+  }
+  const start=new Date(startDate);
+  const now=new Date();
+  now.setHours(0,0,0,0);
+  const weeksPassed=Math.max(0,Math.floor((now-start)/(7*24*3600*1000)));
+  return(weeksPassed%6)+1; // 1-6
+}
+
+// Ritorna l'indice del gruppo weekExs da usare (0-3) in base alla settimana del ciclo
+function getWeekGroup(){
+  const w=getCycleWeek();
+  if(w<=2)return 0;  // sett 1-2: ipertrofia
+  if(w<=4)return 1;  // sett 3-4: forza-ipertrofia
+  if(w===5)return 2; // sett 5: forza massimale
+  return 3;          // sett 6: scarico
+}
+
+// Ritorna il giorno con gli esercizi della settimana corrente
+function getDay(){
+  const d=DAYS[curDay];
+  const wg=getWeekGroup();
+  // costruisce il giorno con esercizi della settimana corrente
+  return{
+    ...d,
+    blocks:d.blocks.map(b=>{
+      if(!b.weekExs)return b;
+      return{...b,exs:b.weekExs[wg]||b.weekExs[0]};
+    })
+  };
+}
+
 
 const KEY_EXS=[
   {id:'bp',name:'Panca piana',emoji:'🏋️',yt:'bench',muscle:'Petto'},
@@ -1165,21 +1348,35 @@ function showSec(id,tabEl,navEl){
 // DAY / TIMELINE
 // ═══════════════════════════════════
 function renderDayRow(){
+  const cw=getCycleWeek();
+  const wLabel=['','Ipertrofia','Ipertrofia','Forza-Ipert.','Forza-Ipert.','Forza Max','Scarico'][cw];
   document.getElementById('day-row').innerHTML=DAYS.map((d,i)=>`
     <button class="day-btn ${i===curDay?'on':''}" onclick="selDay(${i})">
-      <span class="dn">${d.label}</span><span class="dl">${d.name.split(' ')[1]||''}</span>
+      <span class="dn">${d.label}</span>
+      <span class="dl" style="font-size:9px">W${cw}/6</span>
     </button>`).join('');
+  // mostra la fase corrente nell'header
+  const phaseEl=document.getElementById('cycle-phase');
+  if(phaseEl)phaseEl.textContent='Settimana '+cw+'/6 · '+wLabel;
 }
 function selDay(i){curDay=i;wuExs=getWuSet(doy+i);document.querySelectorAll('.day-btn').forEach((b,j)=>b.classList.toggle('on',j===i));renderTimeline();renderBlocks();renderWuPreview();}
-const getDay=()=>DAYS[curDay];
 
 function renderTimeline(){
-  const t=getDay().times;
-  [['Risc.',t.wu,'#dbeafe','#1455a4'],['Core',t.abs,'#ede9fe','#6225c4'],['Sbarra',t.bar,'#dbeafe','#1455a4'],['Pesi',t.weights,'#fef3c7','#a16207'],['WOD',t.wod,'#fefce8','#b59000']]
+  const d=getDay();
+  // calcola i minuti da ogni blocco reale del giorno
+  const typeMap={abs:['Core','#ede9fe','#6225c4'],bar:['Sbarra','#dbeafe','#1455a4'],weights:['Pesi','#fef3c7','#a16207'],wod:['WOD','#fefce8','#b59000']};
+  const wuMins=Math.round((wuExs||[]).length*(wuSec+wuRest)/60)||10;
+  const segs=[['Risc.',wuMins,'#dbeafe','#1455a4']];
+  d.blocks.forEach(b=>{
+    if(!typeMap[b.type])return;
+    const [lbl,bg,col]=typeMap[b.type];
+    const mins=parseInt(b.time)||0;
+    if(mins>0)segs.push([lbl,mins,bg,col]);
+  });
+  document.getElementById('timeline').innerHTML=segs
     .filter(s=>s[1])
     .map(s=>`<div class="tl-seg" style="flex:${s[1]};background:${s[2]};color:${s[3]}">${s[1]>=12?s[0]+' '+s[1]+'m':''}</div>`)
     .join('');
-  document.getElementById('timeline').innerHTML=[['Risc.',t.wu,'#dbeafe','#1455a4'],['Core',t.abs,'#ede9fe','#6225c4'],['Sbarra',t.bar,'#dbeafe','#1455a4'],['Pesi',t.weights,'#fef3c7','#a16207'],['WOD',t.wod,'#fefce8','#b59000']].filter(s=>s[1]).map(s=>`<div class="tl-seg" style="flex:${s[1]};background:${s[2]};color:${s[3]}">${s[1]>=12?s[0]+' '+s[1]+'m':''}</div>`).join('');
 }
 
 // ═══════════════════════════════════
@@ -1391,7 +1588,6 @@ function updateProg(){
 function openExModal(id,bi){
   const d=getDay(),b=d.blocks[bi],e=b?.exs?.find(x=>x.id===id);if(!e)return;
   if(!setSt[id])setSt[id]=Array(e.sets).fill(false);
-  document.getElementById('ex-emoji-box').textContent=e.emoji;
   document.getElementById('em-title').textContent=e.name;
   document.getElementById('em-sub').textContent=e.sets+' serie · '+e.reps+' · '+e.muscle;
   document.getElementById('em-yt').href=YT[e.yt]||YT.default;
@@ -1959,8 +2155,7 @@ function renderPR(){
     const ent=prData[e.id]||[],best=ent.filter(p=>p.pr).slice(-1)[0];
     return`<div class="pr-card">
       <div class="pr-hdr">
-        <div style="width:44px;height:44px;background:var(--warm);border-radius:12px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border);font-size:24px">${e.emoji}</div>
-        <div style="flex:1"><div style="font-size:14px;font-weight:800">${e.name}</div><div style="font-size:11px;color:var(--muted);font-weight:600">${e.muscle}</div></div>
+<div style="flex:1"><div style="font-size:14px;font-weight:800">${e.name}</div><div style="font-size:11px;color:var(--muted);font-weight:600">${e.muscle}</div></div>
         ${best?`<div style="font-size:11px;color:var(--red);background:#fff0ec;padding:5px 12px;border-radius:50px;font-weight:800;white-space:nowrap">🏆 ${best.v}</div>`:''}
       </div>
       ${ent.length?`<div class="pr-entries">${ent.map(en=>`<div class="pr-entry"><span style="color:var(--muted);font-size:10px;width:46px;flex-shrink:0;font-weight:800">${en.d}</span><span style="flex:1;font-weight:800">${en.v}</span><span style="font-size:9px;padding:2px 8px;border-radius:50px;font-weight:800;${en.pr?'background:#fff0ec;color:var(--red)':'background:var(--warm);color:var(--muted)'}">${en.pr?'🏆 PR':'log'}</span></div>`).join('')}</div>`:`<div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:10px">Ancora nessun record. Aggiungilo!</div>`}
