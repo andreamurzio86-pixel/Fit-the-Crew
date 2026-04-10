@@ -147,7 +147,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .ov.top{align-items:flex-start}
 .ov.top .modal{border-radius:0 0 24px 24px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
 .m-close-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--border);color:var(--text);font-size:15px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;margin-top:8px;position:sticky;bottom:0}
-.set-row{display:flex;align-items:center;gap:7px;background:var(--card);border-radius:12px;padding:8px 10px;border:1.5px solid var(--border);margin-bottom:6px}
+.set-row{display:flex;align-items:center;gap:5px;background:var(--card);border-radius:10px;padding:6px 8px;border:1.5px solid var(--border);margin-bottom:5px}
 .sn{font-size:11px;color:var(--muted);width:30px;font-weight:800}
 .si{flex:1;background:var(--warm);border:1.5px solid var(--border);border-radius:8px;padding:9px 8px;color:var(--text);font-size:15px;font-family:'Nunito',sans-serif;text-align:center;font-weight:700}
 .sd{padding:9px 14px;background:var(--warm);border:1.5px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;transition:.15s;white-space:nowrap;touch-action:manipulation}
@@ -775,11 +775,20 @@ function toggleTraining(){
     } else doStart();
   }
 }
+// ══ WAKE LOCK ══
+let _wakeLock=null;
+async function requestWakeLock(){
+  try{if('wakeLock' in navigator){_wakeLock=await navigator.wakeLock.request('screen');_wakeLock.addEventListener('release',()=>{_wakeLock=null;});}}catch(e){}
+}
+function releaseWakeLock(){try{if(_wakeLock){_wakeLock.release();_wakeLock=null;}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&trainingOn)requestWakeLock();});
+
 function doStart(){
   trainingOn=true;
   document.getElementById('train-btn').textContent='⏸ Pausa';
   document.getElementById('train-btn').style.background='var(--green)';
   document.getElementById('fin-btn').style.display='block';
+  requestWakeLock();
   trainingInt=setInterval(()=>{
     trainingSec++;
     const m=Math.floor(trainingSec/60),s=trainingSec%60;
@@ -1299,12 +1308,16 @@ function getWeekGroup(){
 function getDay(){
   const d=DAYS[curDay];
   const wg=getWeekGroup();
-  // costruisce il giorno con esercizi della settimana corrente
   return{
     ...d,
     blocks:d.blocks.map(b=>{
       if(!b.weekExs)return b;
-      return{...b,exs:b.weekExs[wg]||b.weekExs[0]};
+      let exs=b.weekExs[wg]||b.weekExs[0];
+      // Tronca: Core→2, Sbarra→2, Pesi→3
+      if(b.type==='abs')exs=exs.slice(0,2);
+      else if(b.type==='bar')exs=exs.slice(0,2);
+      else if(b.type==='weights')exs=exs.slice(0,3);
+      return{...b,exs};
     })
   };
 }
@@ -1588,6 +1601,24 @@ function updateProg(){
 // ═══════════════════════════════════
 // EX MODAL + REST TOAST
 // ═══════════════════════════════════
+
+// ══ DATI INPUT PERSISTITI ══
+const inputData={}; // {user_id_si: {kg, reps}}
+function saveInputData(id,si,user){
+  const kg=document.getElementById('skg-'+user+'-'+id+'-'+si)?.value||'';
+  const rp=document.getElementById('srp-'+user+'-'+id+'-'+si)?.value||'';
+  if(!inputData[user])inputData[user]={};
+  inputData[user][id+'-'+si]={kg,rp};
+}
+function restoreInputData(id,si,user){
+  const d=inputData[user]?.[id+'-'+si];
+  if(!d)return;
+  const kg=document.getElementById('skg-'+user+'-'+id+'-'+si);
+  const rp=document.getElementById('srp-'+user+'-'+id+'-'+si);
+  if(kg&&d.kg)kg.value=d.kg;
+  if(rp&&d.rp)rp.value=d.rp;
+}
+
 function openExModal(id,bi){
   const d=getDay(),b=d.blocks[bi],e=b?.exs?.find(x=>x.id===id);if(!e)return;
   if(!setSt.top[id])setSt.top[id]=Array(e.sets).fill(false);
@@ -1627,19 +1658,20 @@ function openExModal(id,bi){
         <button class="sd ${donePip?'done':''}" onclick="toggleSet('${id}',${i},${bi},this,'pip')" title="Pip">${donePip?'✓ P':'P'}</button>
       </div>`;
     } else if(!isTime){
+      const repsOnly=e.name.toLowerCase().includes('toes')||e.name.toLowerCase().includes('t2b')||e.repsOnly;
       return`<div class="set-row">
-        <span class="sn" style="min-width:30px">S${i+1}</span>
-        <div style="flex:1;display:flex;flex-direction:column;gap:5px">
-          <div style="display:flex;align-items:center;gap:5px">
-            <span style="font-size:10px;font-weight:900;color:var(--red);min-width:28px">TOP</span>
-            <input class="si" id="skg-top-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'top')">
-            <input class="si" id="srp-top-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'top')">
+        <span class="sn" style="min-width:24px;font-size:11px">S${i+1}</span>
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:9px;font-weight:900;color:var(--red);min-width:22px">TOP</span>
+            ${repsOnly?'':`<input class="si" id="skg-top-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">`}
+            <input class="si" id="srp-top-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">
             <button class="sd ${doneTop?'done':''}" id="sd-top-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'top')">${doneTop?'✓':'✓'}</button>
           </div>
-          <div style="display:flex;align-items:center;gap:5px">
-            <span style="font-size:10px;font-weight:900;color:var(--blue);min-width:28px">PIP</span>
-            <input class="si" id="skg-pip-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'pip')">
-            <input class="si" id="srp-pip-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'pip')">
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:9px;font-weight:900;color:var(--blue);min-width:22px">PIP</span>
+            ${repsOnly?'':`<input class="si" id="skg-pip-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">`}
+            <input class="si" id="srp-pip-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">
             <button class="sd ${donePip?'done':''}" id="sd-pip-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'pip')">${donePip?'✓':'✓'}</button>
           </div>
         </div>
@@ -1649,12 +1681,12 @@ function openExModal(id,bi){
         <span class="sn" style="min-width:30px">S${i+1}</span>
         <div style="flex:1;display:flex;flex-direction:column;gap:5px">
           <div style="display:flex;align-items:center;gap:5px">
-            <span style="font-size:10px;font-weight:900;color:var(--red);min-width:28px">TOP</span>
+            <span style="font-size:9px;font-weight:900;color:var(--red);min-width:22px">TOP</span>
             <input class="si" id="skg-top-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'top')">
             <button class="sd ${doneTop?'done':''}" id="sd-top-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'top')">${doneTop?'✓':'✓'}</button>
           </div>
           <div style="display:flex;align-items:center;gap:5px">
-            <span style="font-size:10px;font-weight:900;color:var(--blue);min-width:28px">PIP</span>
+            <span style="font-size:9px;font-weight:900;color:var(--blue);min-width:22px">PIP</span>
             <input class="si" id="skg-pip-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'pip')">
             <button class="sd ${donePip?'done':''}" id="sd-pip-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'pip')">${donePip?'✓':'✓'}</button>
           </div>
@@ -1663,6 +1695,13 @@ function openExModal(id,bi){
     }
   }).join('');
   document.getElementById('ex-ov').classList.add('open');
+  // Ripristina i valori inseriti precedentemente
+  setTimeout(()=>{
+    for(let i=0;i<e.sets;i++){
+      restoreInputData(id,i,'top');
+      restoreInputData(id,i,'pip');
+    }
+  },30);
 }
 
 // Active set timers map: {key: intervalId}
@@ -1716,13 +1755,14 @@ function startSetTimer(id,si,bi,sec,btn){
   },1000);
 }
 function onInputUser(id,si,bi,user){
-  const kg=document.getElementById('skg-'+user+'-'+id+'-'+si);
-  if(kg&&kg.value)setTimeout(()=>{if(!setSt[user][id]?.[si])markDone(id,si,bi,document.getElementById('sd-'+user+'-'+id+'-'+si),user);},700);
+  // salva i dati inseriti ma NON segna automaticamente come fatto
+  saveInputData(id,si,user);
 }
 function onInput(id,si,bi){} // legacy stub
 function markDone(id,si,bi,btn,user='top'){
   if(!setSt[user][id])setSt[user][id]=Array(getDay().blocks.flatMap(b=>b.exs||[]).find(x=>x.id===id)?.sets||3).fill(false);
   setSt[user][id][si]=true;
+  saveInputData(id,si,user); // salva kg/reps al momento della spunta
   if(btn){btn.className='sd done';btn.textContent='✓';}
   beepDone();
   const d=getDay(),b=d.blocks[bi],e=b?.exs?.find(x=>x.id===id);
@@ -1748,14 +1788,19 @@ function autoRecordPR(id,e,user='top'){
   const sets=e.sets;
   let best1RM=0,bestKg=0,bestReps=0;
   for(let i=0;i<sets;i++){
-    const kg=parseFloat(document.getElementById('skg-'+user+'-'+id+'-'+i)?.value||0)||0;
-    const rp=parseFloat(document.getElementById('srp-'+user+'-'+id+'-'+i)?.value||0)||0;
+    const _dom_kg=document.getElementById('skg-'+user+'-'+id+'-'+i);
+    const _dom_rp=document.getElementById('srp-'+user+'-'+id+'-'+i);
+    const _saved=inputData[user]?.[id+'-'+i];
+    const kg=parseFloat(_dom_kg?.value||_saved?.kg||0)||0;
+    const rp=parseFloat(_dom_rp?.value||_saved?.rp||0)||0;
     const est=calc1RM(kg,rp);
     if(est>best1RM){best1RM=est;bestKg=kg;bestReps=rp;}
   }
   let maxRepsOnly=0;
   for(let i=0;i<sets;i++){
-    const rp=parseFloat(document.getElementById('srp-'+user+'-'+id+'-'+i)?.value||0)||0;
+    const _dom_rp2=document.getElementById('srp-'+user+'-'+id+'-'+i);
+    const _saved2=inputData[user]?.[id+'-'+i];
+    const rp=parseFloat(_dom_rp2?.value||_saved2?.rp||0)||0;
     if(rp>maxRepsOnly)maxRepsOnly=rp;
   }
 
@@ -1804,7 +1849,7 @@ function autoRecordPR(id,e,user='top'){
 function toggleSet(id,si,bi,btn,user='top'){
   if(!setSt[user][id])setSt[user][id]=[];
   if(setSt[user][id][si]){setSt[user][id][si]=false;btn.className='sd';btn.textContent='✓';}
-  else{markDone(id,si,bi,btn,user);return;}
+  else{saveInputData(id,si,user);markDone(id,si,bi,btn,user);return;}
   const d=getDay(),b=d.blocks[bi],e=b?.exs?.find(x=>x.id===id);if(!e)return;
   const allBoth=setSt.top[id]?.every(Boolean)&&setSt.pip[id]?.every(Boolean);
   const card=document.getElementById('ec-'+id);
