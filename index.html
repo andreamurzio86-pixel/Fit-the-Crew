@@ -37,6 +37,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .day-row::-webkit-scrollbar{display:none}
 .day-btn{flex-shrink:0;padding:9px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;text-align:center;min-width:72px;box-shadow:var(--sh)}
 .day-btn.on{background:var(--red);color:#fff;border-color:var(--red)}
+.day-btn.done-day{border-color:var(--green);background:#f0faf5;color:var(--green)}
 .day-btn .dn{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;display:block}
 .day-btn .dl{font-size:10px;display:block;margin-top:1px}
 .timeline{display:flex;border-radius:12px;overflow:hidden;height:26px;margin-bottom:14px;border:1.5px solid var(--border)}
@@ -142,15 +143,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* OVERLAYS */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
 .ov.open{display:flex}
-.modal{background:var(--bg);border-radius:24px 24px 0 0;padding:16px;width:100%;max-width:520px;max-height:96vh;overflow-y:auto;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.modal{background:var(--bg);border-radius:20px 20px 0 0;padding:10px 12px;width:100%;max-width:520px;max-height:60vh;overflow-y:auto;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 .ov.open .modal{transform:translateY(0)}
 .ov.top{align-items:flex-start}
 .ov.top .modal{border-radius:0 0 24px 24px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
-.m-close-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--border);color:var(--text);font-size:15px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;margin-top:8px;position:sticky;bottom:0}
-.set-row{display:flex;align-items:center;gap:5px;background:var(--card);border-radius:10px;padding:6px 8px;border:1.5px solid var(--border);margin-bottom:5px}
+.m-close-btn{display:block;margin:6px 0 0 auto;padding:7px 18px;border:none;border-radius:10px;background:var(--border);color:var(--text);font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;position:sticky;bottom:0}
+.set-row{display:flex;align-items:center;gap:3px;background:var(--card);border-radius:8px;padding:4px 6px;border:1px solid var(--border);margin-bottom:3px}
 .sn{font-size:11px;color:var(--muted);width:30px;font-weight:800}
-.si{flex:1;background:var(--warm);border:1.5px solid var(--border);border-radius:8px;padding:9px 8px;color:var(--text);font-size:15px;font-family:'Nunito',sans-serif;text-align:center;font-weight:700}
-.sd{padding:9px 14px;background:var(--warm);border:1.5px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;transition:.15s;white-space:nowrap;touch-action:manipulation}
+.si{width:42px;max-width:42px;flex:none;background:var(--warm);border:1px solid var(--border);border-radius:5px;padding:4px 2px;color:var(--text);font-size:12px;font-family:'Nunito',sans-serif;text-align:center;font-weight:700}
+.sd{padding:4px 8px;background:var(--warm);border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:11px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;transition:.15s;white-space:nowrap;touch-action:manipulation}
 .sd.done{background:var(--green);border-color:var(--green);color:#fff}
 .set-timer-btn{padding:9px 14px;background:var(--warm);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;white-space:nowrap;touch-action:manipulation;flex-shrink:0}
 .set-timer-btn.running{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -158,7 +159,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .yt-link{display:flex;align-items:center;gap:8px;background:#fff0ec;border:1.5px solid #ffc9b8;border-radius:10px;padding:10px 14px;margin-bottom:14px;text-decoration:none;color:var(--red);font-weight:800;font-size:13px}
 
 /* REST TOAST */
-#rest-toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;border-radius:50px;padding:12px 22px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:10px;z-index:300;opacity:0;transition:.3s;white-space:nowrap;pointer-events:all;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+#rest-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;border-radius:50px;padding:12px 22px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:10px;z-index:300;opacity:0;transition:.3s;white-space:nowrap;pointer-events:all;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.25)}
 #rest-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #rest-num{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#ffa07a}
 
@@ -168,36 +169,36 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 /* WARMUP MODAL */
 .wu-phase-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);text-align:center;margin-bottom:4px}
-.wu-name-big{font-family:'Barlow Condensed',sans-serif;font-size:28px;text-align:center;margin-bottom:4px}
-.wu-desc{font-size:12px;color:var(--muted);text-align:center;font-weight:700;margin-bottom:12px}
+.wu-name-big{font-family:'Barlow Condensed',sans-serif;font-size:24px;text-align:center;margin-bottom:2px}
+.wu-desc{font-size:11px;color:var(--muted);text-align:center;font-weight:700;margin-bottom:6px}
 
-.wu-ring-wrap{position:relative;width:130px;height:130px;margin:0 auto 10px;display:block}
+.wu-ring-wrap{position:relative;width:100px;height:100px;margin:0 auto 6px;display:block}
 .wu-ring-wrap svg{transform:rotate(-90deg)}
 .wu-rbg{fill:none;stroke:rgba(20,85,164,.12);stroke-width:9}
 .wu-rfg{fill:none;stroke:var(--blue);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .3s}
-.wu-sec-n{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:'Barlow Condensed',sans-serif;font-size:48px;color:var(--blue);transition:color .2s}
+.wu-sec-n{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:'Barlow Condensed',sans-serif;font-size:38px;color:var(--blue);transition:color .2s}
 .wu-sec-l{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);white-space:nowrap;font-weight:700}
-.wu-rest-box{background:var(--blue);border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;color:#fff}
-.wu-rest-n{font-family:'Barlow Condensed',sans-serif;font-size:52px;line-height:1;transition:color .2s}
+.wu-rest-box{background:var(--blue);border-radius:10px;padding:8px;text-align:center;margin-bottom:6px;color:#fff}
+.wu-rest-n{font-family:'Barlow Condensed',sans-serif;font-size:38px;line-height:1;transition:color .2s}
 .wu-rest-l{font-size:12px;opacity:.8;font-weight:700}
-.wu-prog-bar{background:var(--border);border-radius:50px;height:5px;overflow:hidden;margin:8px 0 10px}
+.wu-prog-bar{background:var(--border);border-radius:50px;height:4px;overflow:hidden;margin:4px 0 6px}
 .wu-prog-fill{height:100%;background:var(--blue);border-radius:50px;transition:width .4s}
-.wu-next-box{background:rgba(20,85,164,.07);border:1px solid rgba(20,85,164,.18);border-radius:10px;padding:8px 12px;margin-bottom:12px}
+.wu-next-box{background:rgba(20,85,164,.07);border:1px solid rgba(20,85,164,.18);border-radius:8px;padding:5px 10px;margin-bottom:6px}
 .wu-nav{display:flex;gap:8px}
-.wu-nav-btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif}
+.wu-nav-btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
 .wu-nav-btn.p{background:var(--blue);color:#fff}
 .wu-nav-btn.s{background:var(--card);color:var(--text);border:1.5px solid var(--border)}
 .wu-skip{width:100%;margin-top:8px;padding:10px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700}
 
 /* WOD MODAL */
-.wod-modal-hdr{background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:16px;padding:16px;margin-bottom:14px;color:#fff}
-.c-ring-wrap{position:relative;width:140px;height:140px;margin:0 auto 12px;display:block}
+.wod-modal-hdr{background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:12px;padding:10px 12px;margin-bottom:8px;color:#fff}
+.c-ring-wrap{position:relative;width:110px;height:110px;margin:0 auto 8px;display:block}
 .c-ring-wrap svg{transform:rotate(-90deg)}
 .c-rbg{fill:none;stroke:var(--border);stroke-width:9}
 .c-rfg{fill:none;stroke:#e8c000;stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .3s}
-.c-time{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:'Barlow Condensed',sans-serif;font-size:50px;color:var(--text);transition:color .2s}
+.c-time{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:'Barlow Condensed',sans-serif;font-size:40px;color:var(--text);transition:color .2s}
 .c-lbl{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);white-space:nowrap;font-weight:700}
-.c-round-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--warm);border:1.5px solid var(--border);border-radius:50px;padding:6px 16px;font-size:13px;font-weight:800;margin-bottom:12px}
+.c-round-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--warm);border:1.5px solid var(--border);border-radius:50px;padding:4px 12px;font-size:12px;font-weight:800;margin-bottom:6px}
 
 /* EX MODAL */
 .ex-anim{width:100%;height:100px;background:var(--warm);border-radius:14px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:56px}
@@ -273,25 +274,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div class="sec on" id="s-oggi">
     <div class="day-row" id="day-row"></div>
     <div class="timeline" id="timeline"></div>
-    <div id="wu-row" onclick="toggleWuExpand()" style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;margin-bottom:6px;cursor:pointer;touch-action:manipulation">
+    <div id="wu-row" style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;margin-bottom:6px">
       <div style="width:36px;height:36px;border-radius:10px;background:var(--warm);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🔥</div>
       <div style="flex:1">
         <div style="font-size:13px;font-weight:800">Riscaldamento</div>
-        <div id="wu-sub" style="font-size:11px;color:var(--muted);font-weight:600;margin-top:1px">7 esercizi · tocca per espandere</div>
+        <div id="wu-sub" style="font-size:11px;color:var(--muted);font-weight:600;margin-top:1px">10 esercizi · 45s ciascuno</div>
       </div>
-      <div style="text-align:right;flex-shrink:0">
-        <div id="wu-total-lbl" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--red)">12'</div>
-        <div id="wu-chev" style="font-size:11px;color:var(--muted);transition:transform .2s">▼</div>
-      </div>
-    </div>
-    <div id="wu-expand" style="display:none;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 14px 14px;padding:0 13px 12px;margin-top:-8px;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:8px">
-        <span style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0">Durata/es.</span>
-        <input type="range" min="30" max="90" value="45" step="15" id="wu-range" oninput="setWuDur(+this.value)" style="flex:1;accent-color:var(--red);touch-action:manipulation">
-        <span id="wu-val" style="font-size:13px;font-weight:800;color:var(--red);min-width:32px;text-align:right">45s</span>
-      </div>
-      <div id="wu-preview"></div>
-      <button onclick="startWU()" id="wu-start-btn" style="width:100%;padding:12px;border:none;border-radius:11px;background:var(--red);color:#fff;font-size:14px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;touch-action:manipulation">▶ Avvia riscaldamento</button>
+      <button ontouchend="event.preventDefault();event.stopPropagation();startWU()" onclick="startWU()" id="wu-start-btn" style="padding:8px 14px;border:none;border-radius:10px;background:var(--red);color:#fff;font-size:13px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation;flex-shrink:0">▶ Avvia</button>
     </div>
     <div class="prog-row"><span id="prog-lbl">Progresso</span><span id="prog-pct">0%</span></div>
     <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
@@ -542,7 +531,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div id="cd-overlay"><div id="cd-num">3</div></div>
 
 <!-- WU MODAL -->
-<div class="ov" id="wu-ov" onclick="if(event.target===this)stopWU()">
+<div class="ov" id="wu-ov">
   <div class="modal">
     <div class="wu-phase-lbl" id="wu-phase-lbl">ESERCIZIO 1 DI 7</div>
     <div class="wu-name-big" id="wu-ex-name" style="color:var(--blue)"></div>
@@ -550,7 +539,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div id="wu-tips-box"></div>
     <div id="wu-ring-sec">
       <div class="wu-ring-wrap">
-        <svg width="130" height="130"><circle class="wu-rbg" cx="65" cy="65" r="56"/><circle class="wu-rfg" id="wu-rfg" cx="65" cy="65" r="56" stroke-dasharray="351.9" stroke-dashoffset="0" style="transform:rotate(-90deg);transform-origin:65px 65px"/></svg>
+        <svg width="100" height="100"><circle class="wu-rbg" cx="50" cy="50" r="42"/><circle class="wu-rfg" id="wu-rfg" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="0" style="transform:rotate(-90deg);transform-origin:50px 50px"/></svg>
         <div class="wu-sec-n" id="wu-sec-n">45</div>
         <div class="wu-sec-l">secondi</div>
       </div>
@@ -570,20 +559,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <div style="font-size:10px;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:1px">Prossimo</div>
       <div style="font-size:13px;font-weight:800;margin-top:2px" id="wu-next-name"></div>
     </div>
-    <div class="wu-nav">
-      <button class="wu-nav-btn s" onclick="stopWU()">Interrompi</button>
-      <button class="wu-nav-btn p" id="wu-pause-btn" onclick="pauseWU()">Pausa</button>
-    </div>
-    <button class="wu-skip" onclick="wuSkip()">Salta esercizio →</button>
+    <div style="height:50px"></div>
   </div>
 </div>
 
 <!-- EX MODAL -->
 <div class="ov top" id="ex-ov" onclick="if(event.target===this)closeExModal()">
   <div class="modal">
-    <div class="bb" style="font-size:24px;margin-bottom:1px" id="em-title"></div>
-    <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:8px" id="em-sub"></div>
-    <a id="em-yt" href="#" target="_blank" rel="noopener" class="yt-link" style="margin-bottom:10px;padding:8px 12px">
+    <div class="bb" style="font-size:20px;margin-bottom:1px" id="em-title"></div>
+    <div style="font-size:10px;color:var(--muted);font-weight:700;margin-bottom:6px" id="em-sub"></div>
+    <a id="em-yt" href="#" target="_blank" rel="noopener" class="yt-link" style="margin-bottom:8px;padding:6px 10px;font-size:12px">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="#c8230a"><path d="M23 7s-.3-1.9-1.2-2.7c-1.1-1.2-2.4-1.2-3-1.3C16.2 3 12 3 12 3s-4.2 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5.1 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 1.9 1.2 2.7c1.1 1.2 2.6 1.1 3.3 1.2C7.2 21.4 12 21.5 12 21.5s4.2 0 6.8-.3c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.7 1.2-2.7s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/></svg>
       Guarda come si esegue su YouTube
     </a>
@@ -593,46 +578,34 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 </div>
 
 <!-- WOD MODAL -->
-<div class="ov" id="wod-ov" onclick="if(event.target===this)closeWodModal()">
-  <div class="modal" style="text-align:center">
+<div class="ov" id="wod-ov">
+  <div class="modal" style="text-align:center;padding:10px 12px;padding-bottom:70px">
     <div class="wod-modal-hdr">
       <div style="font-size:10px;font-weight:800;letter-spacing:1px;opacity:.6;text-transform:uppercase;margin-bottom:3px" id="wm-phase">ROUND 1</div>
       <div class="bb" style="font-size:28px;color:#e8c000" id="wm-name">WOD</div>
       <div style="font-size:12px;opacity:.72;font-weight:700" id="wm-detail"></div>
     </div>
     <!-- FOR TIME stopwatch — visibile solo per mode ftime/reps -->
-    <div id="wm-stopwatch" style="display:none;margin:8px 0">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:#e8c000;letter-spacing:2px" id="wm-sw-display">0:00</div>
+    <div id="wm-stopwatch" style="display:none;margin:4px 0">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:#e8c000;letter-spacing:1px" id="wm-sw-display">0:00</div>
       <div style="font-size:10px;opacity:.6;font-weight:800;text-transform:uppercase;letter-spacing:1px">FOR TIME</div>
     </div>
     <div class="c-ring-wrap">
-      <svg width="140" height="140"><circle class="c-rbg" cx="70" cy="70" r="60"/><circle class="c-rfg" id="wm-ring" cx="70" cy="70" r="60" stroke-dasharray="376.9" stroke-dashoffset="0" style="transform:rotate(-90deg);transform-origin:70px 70px"/></svg>
+      <svg width="110" height="110"><circle class="c-rbg" cx="55" cy="55" r="46"/><circle class="c-rfg" id="wm-ring" cx="55" cy="55" r="46" stroke-dasharray="289" stroke-dashoffset="0" style="transform:rotate(-90deg);transform-origin:55px 55px"/></svg>
       <div class="c-time" id="wm-time">1</div>
       <div class="c-lbl" id="wm-lbl">esercizio</div>
     </div>
     <div class="c-round-badge">Round <span class="bb" style="font-size:20px;color:var(--red);margin:0 4px" id="wm-round">1</span> di <span class="bb" style="font-size:20px;margin-left:4px" id="wm-rounds">3</span></div>
     <div style="background:var(--border);border-radius:50px;height:5px;overflow:hidden;margin-bottom:10px"><div id="wm-prog" style="height:100%;background:#e8c000;border-radius:50px;width:0%;transition:width .4s"></div></div>
-    <div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:14px" id="wm-next"></div>
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button class="wu-nav-btn s" style="flex:1" onclick="closeWodModal()">Interrompi</button>
-      <button class="wu-nav-btn s" style="flex:1" id="wm-pause" onclick="pauseWOD()">⏸ Pausa</button>
-      <button class="wu-nav-btn p" style="flex:1;background:#e8c000;color:#1a1a2e" id="wm-action" onclick="wodAction()">Prossimo →</button>
-    </div>
+    <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:6px" id="wm-next"></div>
+    <div style="height:60px"></div>
     <div style="font-size:11px;color:var(--muted);font-weight:700;margin-top:8px" id="wm-hint"></div>
   </div>
+
 </div>
 
 <script>
-function toggleWuExpand(){
-  const exp=document.getElementById('wu-expand');
-  const chev=document.getElementById('wu-chev');
-  const row=document.getElementById('wu-row');
-  const open=exp.style.display==='block';
-  exp.style.display=open?'none':'block';
-  chev.style.transform=open?'':'rotate(180deg)';
-  row.style.borderRadius=open?'14px':'14px 14px 0 0';
-  row.style.borderBottom=open?'':'none';
-}
+
 const swappedExs={};let _swapId=null,_swapBi=null;
 let trainingOn=false,trainingSec=0,trainingInt=null,finishSnap=null;
 // ── MUSCLE LABELS ─────────────────────────────────────────────────────────────
@@ -796,7 +769,8 @@ function doStart(){
   },1000);
 }
 function finishTraining(){
-  if(!confirm('Vuoi terminare l\'allenamento?'))return;
+  showConfirm('Termina allenamento?','I progressi verranno salvati nel riepilogo.','Termina',ok=>{
+  if(!ok)return;
   clearInterval(trainingInt);trainingOn=false;
   const d=getDay();
   const all=d.blocks.filter(b=>b.type!=='wod').flatMap(b=>b.exs||[]);
@@ -834,6 +808,7 @@ function finishTraining(){
     `<div class="rc wide"><div class="rl">WOD del giorno</div><div class="rv" style="font-size:20px;color:var(--gold)">${finishSnap.wod}</div></div>`;
   document.getElementById('recap-note').value='';
   document.getElementById('recap-ov').classList.add('open');
+  });
 }
 function resumeTraining(){
   document.getElementById('recap-ov').classList.remove('open');
@@ -849,6 +824,7 @@ function saveSession(){
   resetTraining();
   doCSV(sessions);
   renderStats();
+  renderDayRow();
   showSec('stats',document.querySelectorAll('.tab')[4]);
 }
 function discardSession(){
@@ -1040,8 +1016,27 @@ const WU_POOL=[
   {name:'World\'s Greatest Stretch',desc:'L\'allungamento full body per eccellenza',parts:['Lato sinistro','Lato destro'],tips:'Affondo lungo, mano stessa gamba a terra, altro braccio ruota verso il soffitto. Tieni 2s. Alterna i lati lentamente.'},
   {name:'Allungamento flessori anca',desc:'Affondo basso — senti l\'inguine aprirsi',parts:['Anca sinistra','Anca destra'],tips:'Ginocchio posteriore a terra. Sposta il peso in avanti finché senti lo stiramento davanti all\'anca. Mantieni il busto eretto.'},
   {name:'Circles polsi e caviglie',desc:'10 per senso, mobilità articolare',parts:['Polsi','Caviglie'],tips:'Polsi prima: apri le dita e ruota lentamente. Poi caviglie: seduto o in piedi su un piede. 10 rotazioni per senso per ogni articolazione.'},
+  {name:'Allungamento quadricipiti',desc:'Tallone al gluteo, 20s per lato',parts:['Gamba sinistra','Gamba destra'],tips:'In piedi su un piede, porta il tallone al gluteo. Ginocchia unite. Busto eretto.'},
+  {name:'Allungamento femorali',desc:'Piegati in avanti a gambe tese',tips:'Piedi uniti, gambe tese. Scendi lentamente. Non rimbalzare. Tieni 20-30 secondi.'},
+  {name:'Allungamento dorsali',desc:'Braccia in avanti, schiena tonda',tips:'Intreccia le dita, spingi le braccia avanti. Arrotonda la schiena. Senti lo stiramento tra le scapole.'},
+  {name:'Allungamento petto',desc:'Braccio aperto contro parete',parts:['Lato sinistro','Lato destro'],tips:'Porta un braccio teso contro una parete. Ruota il corpo verso fuori. Senti lo stiramento nel petto. 20s per lato.'},
+  {name:'Allungamento collo',desc:'Inclinazione laterale, 10s per lato',parts:['Lato sinistro','Lato destro'],tips:'Inclina delicatamente la testa verso una spalla. Aumenta con la mano. Solo inclinazione, non rotazione.'},
+  {name:'Allungamento tricipiti',desc:'Gomito sopra la testa, 20s per lato',parts:['Braccio sinistro','Braccio destro'],tips:'Porta il gomito piegato sopra la testa. Spingi con l altra mano verso il basso.'},
+  {name:'Gatto-Cammello',desc:'Mobilita colonna in quadrupedia',parts:['Flessione','Estensione'],tips:'Inspira e inarca la schiena (cammello), espira e arrotondala (gatto). Lento e ritmico. 10 reps.'},
+  {name:'Allungamento polpacci',desc:'Tallone a terra, gamba tesa',parts:['Gamba sinistra','Gamba destra'],tips:'Mani a parete. Gamba posteriore tesa, tallone a terra. Avanza col corpo. 20s per lato.'},
+  {name:'Squat a corpo libero',desc:'10 ripetizioni lente e controllate',tips:'Piedi a larghezza spalle, punte fuori 30°. Scendi fino a parallelo. Schiena neutra. Talloni a terra per tutto il movimento.'},
+  {name:'Push-up lenti',desc:'5 ripetizioni — 3s scendi, 1s sali',tips:'Mani larghezza spalle. Corpo rigido come un asse. Scendi lentamente finche il petto sfiora il pavimento. Spingi espirando.'},
+  {name:'Superman Hold',desc:'Sdraiato prono, solleva braccia e gambe',tips:'Sdraiato a pancia in giu. Solleva contemporaneamente braccia e gambe. Tieni 2s in cima. Rilascia lentamente. 10 reps.'},
+  {name:'Bird-Dog',desc:'Quadrupedia — braccio e gamba opposti',parts:['Lato sinistro','Lato destro'],tips:'In quadrupedia. Estendi braccio sinistro e gamba destra simultaneamente. Mantieni il core fermo. 10 reps per lato.'},
+  {name:'Glute Bridge',desc:'Sdraiato, solleva il bacino',tips:'Sdraiato, ginocchia piegate, piedi a terra. Spingi i glutei verso il soffitto. Tieni 2s. Scendi lentamente. 15 ripetizioni.'},
+  {name:'Side-to-Side Step',desc:'Passi laterali ampi — 10 per lato',tips:'Piedi larghi, ginocchia leggermente piegate. Passo laterale ampio, porta il piede a seguire. Mantieni il peso basso. Attiva i glutei.'},
+  {name:'Shoulder Pass-Through',desc:'Braccio teso sopra la testa — avanti e indietro',tips:'Tieni un bastone o asciugamano teso con presa larga. Porta lentamente da davanti a dietro la testa. Allarga la presa se necessario.'},
+  {name:'Hollow Body Hold',desc:'Core attivato — schiena a terra',tips:'Sdraiato. Premi la schiena a terra. Solleva gambe e spalle 20cm. Braccia sopra la testa. Tieni 20-30 secondi. Respira.'},
+  {name:'Samson Stretch',desc:'Affondo profondo con braccia alte',parts:['Gamba sinistra','Gamba destra'],tips:'Affondo lungo con il ginocchio posteriore a terra. Porta le braccia sopra la testa. Apri il petto. Tieni 30s per lato.'},
+  {name:'Scorpion Stretch',desc:'Sdraiato prono, gamba attraversa il corpo',parts:['Lato sinistro','Lato destro'],tips:'Sdraiato a pancia in giu, braccia aperte. Porta un piede verso la mano opposta ruotando i fianchi. Senti lo stiramento ai flessori.'},
+  {name:'Respirazione diaframmatica',desc:'5 respiri profondi — attiva il sistema nervoso',tips:'Sdraiato o seduto. Inspira 4s gonfiando la pancia, non il petto. Trattieni 2s. Espira 6s. Ripeti 5 volte. Rilassa i muscoli.'},
 ];
-function getWuSet(i){const s=(i*4)%WU_POOL.length,r=[];for(let j=0;j<7;j++)r.push(WU_POOL[(s+j)%WU_POOL.length]);return r;}
+function getWuSet(i){const s=(i*4)%WU_POOL.length,r=[];for(let j=0;j<10;j++)r.push(WU_POOL[(s+j)%WU_POOL.length]);return r;}
 
 // ═══════════════════════════════════
 // YT LINKS
@@ -1344,7 +1339,7 @@ let wuExs=getWuSet(doy);
 let wuSec=45,wuRest=12,wuPhase='ex',wuIdx=0,wuLeft=0,wuOn=false,wuPause=false,wuInt=null,wuPart=0;
 let restInt=null,restLeft=0;
 let tTotal=90,tLeft=90,tOn=false,tInt=null;
-let wodD=null,wExI=0,wRnd=1,wOn=false,wPause=false,wInt=null,wLeft=0,wEl=0;
+let wodD=null,wExI=0,wRnd=1,wOn=false,wPause=false,wInt=null,wLeft=0,wEl=0,_wodCdActive=false;
 
 const fmtT=s=>Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;
 const fmtS=s=>(s<10?'0':'')+s;
@@ -1366,16 +1361,34 @@ function showSec(id,tabEl,navEl){
 function renderDayRow(){
   const cw=getCycleWeek();
   const wLabel=['','Ipertrofia','Ipertrofia','Forza-Ipert.','Forza-Ipert.','Forza Max','Scarico'][cw];
-  document.getElementById('day-row').innerHTML=DAYS.map((d,i)=>`
-    <button class="day-btn ${i===curDay?'on':''}" onclick="selDay(${i})">
+  // calcola l'inizio della settimana corrente (lunedì)
+  const now=new Date();
+  const dayOfWeek=now.getDay(); // 0=dom
+  const monday=new Date(now);
+  monday.setDate(now.getDate()-(dayOfWeek===0?6:dayOfWeek-1));
+  monday.setHours(0,0,0,0);
+  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);sunday.setHours(23,59,59,999);
+  // giorni completati questa settimana
+  const sessions=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
+  const completedLabels=new Set(sessions.filter(s=>{
+    const d=new Date(s.dateISO);
+    return d>=monday&&d<=sunday;
+  }).map(s=>s.dayLabel));
+  document.getElementById('day-row').innerHTML=DAYS.map((d,i)=>{
+    const done=completedLabels.has(d.label);
+    const active=i===curDay;
+    const locked=(trainingOn&&!active)||done; // blocca se allenamento in corso o già fatto questa settimana
+    return`<button class="day-btn ${active&&!done?'on':''} ${done?'done-day':''}" 
+      onclick="${locked?'':'selDay('+i+')'}" 
+      style="${locked&&!active?'opacity:.5;pointer-events:none;cursor:default;':''}${done&&active?'pointer-events:none;':''}">
       <span class="dn">${d.label}</span>
-      <span class="dl" style="font-size:9px">W${cw}/6</span>
-    </button>`).join('');
-  // mostra la fase corrente nell'header
+      <span class="dl" style="font-size:9px">${done?'✓ fatto':'W'+cw+'/6'}</span>
+    </button>`;
+  }).join('');
   const phaseEl=document.getElementById('cycle-phase');
   if(phaseEl)phaseEl.textContent='Settimana '+cw+'/6 · '+wLabel;
 }
-function selDay(i){curDay=i;wuExs=getWuSet(doy+i);document.querySelectorAll('.day-btn').forEach((b,j)=>b.classList.toggle('on',j===i));renderTimeline();renderBlocks();renderWuPreview();}
+function selDay(i){if(trainingOn)return;curDay=i;wuExs=getWuSet(doy+i);document.querySelectorAll('.day-btn').forEach((b,j)=>b.classList.toggle('on',j===i));renderTimeline();renderBlocks();}
 
 function renderTimeline(){
   const d=getDay();
@@ -1402,9 +1415,9 @@ function setWuDur(v){
   wuSec=v;
   document.getElementById('wu-val').textContent=v+'s';
   const mins=Math.round(wuExs.length*(v+wuRest)/60);
-  document.getElementById('wu-total-lbl').textContent=mins+"'";
+  
   document.getElementById('wu-sub').textContent=wuExs.length+' esercizi · '+v+'s ciascuno';
-  renderWuPreview();
+  
 }
 function renderWuPreview(){
   document.getElementById('wu-preview').innerHTML=wuExs.map((e,i)=>
@@ -1416,10 +1429,26 @@ function renderWuPreview(){
 }
 function startWU(){
   try{ac();}catch(e){}
-  wuIdx=0;wuPhase='ex';wuPart=0;wuLeft=wuPartSec();wuOn=true;wuPause=false;
+  wuIdx=0;wuPhase='ex';wuPart=0;wuOn=false;wuPause=false;wuLeft=wuPartSec();
   document.getElementById('wu-pause-btn').textContent='Pausa';
-  renderWuModal();document.getElementById('wu-ov').classList.add('open');
-  wuInt=setInterval(tickWU,1000);
+  renderWuModal();document.getElementById('wu-ov').classList.add('open');document.getElementById('wu-btn-bar').style.display='block';
+  // avvia timer allenamento se non già in corso
+  if(!trainingOn)doStart();
+  // countdown 3-2-1
+  let cd=3;
+  const numEl=document.getElementById('wu-sec-n');
+  if(numEl)numEl.textContent=cd;
+  beepStrong();flash(cd);
+  const cdi=setInterval(()=>{
+    cd--;
+    if(cd>0){if(numEl)numEl.textContent=cd;beepStrong();flash(cd);}
+    else{
+      clearInterval(cdi);beepGo();flash('go','rgba(26,120,60,.88)');
+      if(numEl)numEl.textContent=wuLeft;
+      wuOn=true;
+      wuInt=setInterval(tickWU,1000);
+    }
+  },1000);
 }
 function wuPartSec(){
   const e=wuExs[wuIdx];
@@ -1452,13 +1481,13 @@ function finishWU(){
   const b=document.getElementById('wu-start-btn');
   b.textContent='✅ Completato!';b.style.cssText='background:#1a7a45;color:#fff';b.disabled=true;
   document.getElementById('wu-sub').textContent='✅ Completato — ottimo lavoro!';
-  document.getElementById('wu-total-lbl').textContent='✓';
+  
   document.getElementById('wu-total-lbl').style.color='var(--green)';
-  document.getElementById('wu-expand').style.display='none';
+  
   document.getElementById('wu-chev').style.transform='';
-  document.getElementById('wu-row').style.borderRadius='14px';
-  document.getElementById('wu-row').style.borderBottom='';
-  document.getElementById('wu-row').style.borderColor='var(--green)';
+  
+  
+  
 }
 function renderWuModal(){
   const isRest=wuPhase==='rest',e=wuExs[wuIdx],nxt=wuExs[wuIdx+1];
@@ -1526,7 +1555,21 @@ function renderWuModal(){
   } else nb.style.display='none';
 }
 function pauseWU(){wuPause=!wuPause;document.getElementById('wu-pause-btn').textContent=wuPause?'Riprendi':'Pausa';}
-function stopWU(){clearInterval(wuInt);wuOn=false;document.getElementById('wu-ov').classList.remove('open');}
+
+// ── DIALOG CONFERMA CUSTOM ──
+let _confirmCb=null;
+function showConfirm(msg,sub,okLabel,cb){
+  document.getElementById('confirm-msg').textContent=msg;
+  document.getElementById('confirm-sub').textContent=sub||'';
+  document.getElementById('confirm-ok-btn').textContent=okLabel||'Conferma';
+  document.getElementById('confirm-ov').style.display='flex';
+  _confirmCb=cb;
+}
+function confirmResolve(ok){
+  document.getElementById('confirm-ov').style.display='none';
+  if(_confirmCb){const cb=_confirmCb;_confirmCb=null;cb(ok);}
+}
+function stopWU(){if(wuOn&&!wuPause){clearInterval(wuInt);wuPause=true;}showConfirm('Interrompi riscaldamento?','Perderai i progressi del warm-up.','Interrompi',ok=>{if(!ok){if(wuPause){wuPause=false;wuInt=setInterval(tickWU,1000);}return;}clearInterval(wuInt);wuOn=false;wuPause=false;document.getElementById('wu-ov').classList.remove('open');document.getElementById('wu-btn-bar').style.display='none';});}
 function wuSkip(){
   if(wuPhase==='rest'){wuLeft=0;}
   else {
@@ -1659,36 +1702,36 @@ function openExModal(id,bi){
       </div>`;
     } else if(!isTime){
       const repsOnly=e.name.toLowerCase().includes('toes')||e.name.toLowerCase().includes('t2b')||e.repsOnly;
-      return`<div class="set-row">
-        <span class="sn" style="min-width:24px;font-size:11px">S${i+1}</span>
-        <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+      return`<div class="set-row" style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:10px;color:var(--muted);font-weight:800;width:16px;flex-shrink:0">S${i+1}</span>
+        <div style="display:flex;flex-direction:column;gap:3px;flex:1">
           <div style="display:flex;align-items:center;gap:4px">
-            <span style="font-size:9px;font-weight:900;color:var(--red);min-width:22px">TOP</span>
+            <span style="font-size:8px;font-weight:900;color:var(--red);width:22px;flex-shrink:0">TOP</span>
             ${repsOnly?'':`<input class="si" id="skg-top-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">`}
             <input class="si" id="srp-top-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">
-            <button class="sd ${doneTop?'done':''}" id="sd-top-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'top')">${doneTop?'✓':'✓'}</button>
+            <button class="sd ${doneTop?'done':''}" id="sd-top-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'top')">✓</button>
           </div>
           <div style="display:flex;align-items:center;gap:4px">
-            <span style="font-size:9px;font-weight:900;color:var(--blue);min-width:22px">PIP</span>
+            <span style="font-size:8px;font-weight:900;color:var(--blue);width:22px;flex-shrink:0">PIP</span>
             ${repsOnly?'':`<input class="si" id="skg-pip-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">`}
             <input class="si" id="srp-pip-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">
-            <button class="sd ${donePip?'done':''}" id="sd-pip-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'pip')">${donePip?'✓':'✓'}</button>
+            <button class="sd ${donePip?'done':''}" id="sd-pip-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'pip')">✓</button>
           </div>
         </div>
       </div>`;
     } else {
-      return`<div class="set-row">
-        <span class="sn" style="min-width:30px">S${i+1}</span>
-        <div style="flex:1;display:flex;flex-direction:column;gap:5px">
-          <div style="display:flex;align-items:center;gap:5px">
-            <span style="font-size:9px;font-weight:900;color:var(--red);min-width:22px">TOP</span>
-            <input class="si" id="skg-top-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'top')">
-            <button class="sd ${doneTop?'done':''}" id="sd-top-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'top')">${doneTop?'✓':'✓'}</button>
+      return`<div class="set-row" style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:10px;color:var(--muted);font-weight:800;width:16px;flex-shrink:0">S${i+1}</span>
+        <div style="display:flex;flex-direction:column;gap:3px;flex:1">
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:8px;font-weight:900;color:var(--red);width:22px;flex-shrink:0">TOP</span>
+            <input class="si" id="skg-top-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">
+            <button class="sd ${doneTop?'done':''}" id="sd-top-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'top')">✓</button>
           </div>
-          <div style="display:flex;align-items:center;gap:5px">
-            <span style="font-size:9px;font-weight:900;color:var(--blue);min-width:22px">PIP</span>
-            <input class="si" id="skg-pip-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" style="flex:1" onchange="onInputUser('${id}',${i},${bi},'pip')">
-            <button class="sd ${donePip?'done':''}" id="sd-pip-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'pip')">${donePip?'✓':'✓'}</button>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:8px;font-weight:900;color:var(--blue);width:22px;flex-shrink:0">PIP</span>
+            <input class="si" id="skg-pip-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">
+            <button class="sd ${donePip?'done':''}" id="sd-pip-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'pip')">✓</button>
           </div>
         </div>
       </div>`;
@@ -1773,8 +1816,8 @@ function markDone(id,si,bi,btn,user='top'){
   const card=document.getElementById('ec-'+id);
   if(card&&e){card.className='ex-card'+(e.key?' key':'')+(allBoth?' done':'');card.querySelector('.ex-check').textContent=allBoth?'✓':'';}
   updateProg();
-  if(allBoth)startRest(120);
-  else if(allUser)startRest(60);
+  // timer riposo dopo ogni serie (60s), 90s se ultima serie dell'esercizio
+  startRest(allUser?90:60);
   if(allUser&&e?.key)autoRecordPR(id,e,user);
 }
 
@@ -1885,7 +1928,7 @@ function startWOD(wod){
     sw.style.display='none';
   }
   renderWodModal();
-  document.getElementById('wod-ov').classList.add('open');
+  document.getElementById('wod-ov').classList.add('open');document.getElementById('wod-btn-bar').style.display='flex';
   // countdown 3-2-1 poi avvia
   try{ac();}catch(e){}
   const timeEl=document.getElementById('wm-time');
@@ -1894,18 +1937,21 @@ function startWOD(wod){
   let cd=3;
   timeEl.textContent=cd;lblEl.textContent='';
   beepStrong();flash(cd);
-  const cdi=setInterval(()=>{
+  _wodCdActive=true;
+  let _wodCdi=null;
+  _wodCdi=setInterval(()=>{
     cd--;
     if(cd>0){timeEl.textContent=cd;beepStrong();flash(cd);}
     else{
-      clearInterval(cdi);
+      clearInterval(_wodCdi);_wodCdi=null;_wodCdActive=false;
       beepGo();flash('go','rgba(26,120,60,.88)');
       timeEl.textContent=origTime;lblEl.textContent=origLbl;
-      // avvia il timer vero
+      if(wPause){return;} // rimane in pausa se premuto durante countdown // paused during countdown
       if(wod.mode==='tabata'){wLeft=wod.workSec||20;wInt=setInterval(tickWOD,1000);}
       else if(wod.mode==='amrap'){wLeft=wod.totalSec||900;wInt=setInterval(tickWOD,1000);}
       else{
         wInt=setInterval(()=>{
+          if(wPause)return;
           wod._swSec++;
           const m=Math.floor(wod._swSec/60),s=wod._swSec%60;
           document.getElementById('wm-sw-display').textContent=m+':'+(s<10?'0':'')+s;
@@ -1980,15 +2026,15 @@ function pauseWOD(){
   if(!wodD)return;
   wPause=!wPause;
   const btn=document.getElementById('wm-pause');
+  if(!btn)return;
   if(wPause){
     clearInterval(wInt);wInt=null;
     btn.textContent='▶ Riprendi';btn.style.background='var(--green)';btn.style.color='#fff';
   } else {
     btn.textContent='⏸ Pausa';btn.style.background='';btn.style.color='';
-    // riprendi il timer in base alla modalità
     if(wodD.mode==='tabata'||wodD.mode==='amrap'){
       wInt=setInterval(tickWOD,1000);
-    } else if(wodD.mode==='ftime'||wodD.mode==='reps'){
+    } else {
       wInt=setInterval(()=>{
         wodD._swSec++;
         const m=Math.floor(wodD._swSec/60),s=wodD._swSec%60;
@@ -2000,7 +2046,7 @@ function pauseWOD(){
 }
 function finishWOD(){
   clearInterval(wInt);wOn=false;
-  document.getElementById('wod-ov').classList.remove('open');
+  document.getElementById('wod-ov').classList.remove('open');document.getElementById('wod-btn-bar').style.display='none';
   document.getElementById('wm-stopwatch').style.display='none';
   beepGo();setTimeout(beepGo,320);
   const swSec=wodD?._swSec||0;
@@ -2008,11 +2054,25 @@ function finishWOD(){
   alert('🎉 WOD completato'+timeStr+'! Ottimo lavoro Crew!');
 }
 function closeWodModal(){
-  clearInterval(wInt);wOn=false;wPause=false;
-  document.getElementById('wod-ov').classList.remove('open');
-  document.getElementById('wm-stopwatch').style.display='none';
-  const pb=document.getElementById('wm-pause');
-  if(pb){pb.textContent='⏸ Pausa';pb.style.background='';pb.style.color='';}
+  // metti in pausa prima di chiedere (clearInterval reale)
+  const wasRunning=wOn&&!wPause;
+  if(wasRunning){clearInterval(wInt);wInt=null;wPause=true;const pb=document.getElementById('wm-pause');if(pb){pb.textContent='▶ Riprendi';pb.style.background='var(--green)';pb.style.color='#fff';}}
+  showConfirm('Interrompi WOD?','Il tempo registrato andrà perso.','Interrompi',ok=>{
+    if(!ok){
+      // riprendi se annulla
+      if(wasRunning){
+        wPause=false;
+        const pb=document.getElementById('wm-pause');if(pb){pb.textContent='⏸ Pausa';pb.style.background='';pb.style.color='';}
+        if(wodD.mode==='tabata'||wodD.mode==='amrap'){wInt=setInterval(tickWOD,1000);}
+        else{wInt=setInterval(()=>{wodD._swSec++;const m=Math.floor(wodD._swSec/60),s=wodD._swSec%60;const el=document.getElementById('wm-sw-display');if(el)el.textContent=m+':'+(s<10?'0':'')+s;},1000);}
+      }
+      return;}
+    clearInterval(wInt);wOn=false;wPause=false;
+    document.getElementById('wod-ov').classList.remove('open');document.getElementById('wod-btn-bar').style.display='none';
+    document.getElementById('wm-stopwatch').style.display='none';
+    const pb=document.getElementById('wm-pause');
+    if(pb){pb.textContent='⏸ Pausa';pb.style.background='';pb.style.color='';}
+  });
 }
 
 // ═══════════════════════════════════
@@ -2171,12 +2231,27 @@ function updateFTDisp(){
   }
 }
 function toggleFT(){
-  if(ftOn){clearInterval(ftInt);ftOn=false;setOnOff('ft',false);return;}
+  if(ftOn){
+    // PAUSA
+    clearInterval(ftInt);ftInt=null;ftOn=false;setOnOff('ft',false);
+    return;
+  }
+  if(ftSec>0){
+    // RIPRENDI senza countdown
+    try{ac();}catch(e){}
+    ftOn=true;setOnOff('ft',true);
+    ftInt=setInterval(()=>{ftSec++;updateFTDisp();},1000);
+    return;
+  }
+  // PRIMO AVVIO — countdown 3-2-1
   try{ac();}catch(e){}
-  let cd=3;beepStrong();flash(3);
+  let cd=3;
+  const numEl=document.getElementById('ft-num');
+  numEl.textContent=cd+'...';beepStrong();flash(cd);
   const cdi=setInterval(()=>{cd--;
-    if(cd>0){btn.textContent=cd+'...';beepStrong();flash(cd);}
-    else{clearInterval(cdi);btn.disabled=false;beepGo();flash('go');ftOn=true;setOnOff('ft',true);
+    if(cd>0){numEl.textContent=cd+'...';beepStrong();flash(cd);}
+    else{clearInterval(cdi);beepGo();flash('go');ftOn=true;setOnOff('ft',true);
+      numEl.textContent='0:00';
       ftInt=setInterval(()=>{ftSec++;updateFTDisp();},1000);}
   },1000);
 }
@@ -2511,7 +2586,6 @@ document.head.appendChild(Object.assign(document.createElement('link'),{rel:'man
 // INIT
 // ═══════════════════════════════════
 document.getElementById('nav-date').textContent=today.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-setWuDur(45);
 // carica prData da localStorage
 try{const _pd=JSON.parse(localStorage.getItem('ftc_v4')||'{}');if(_pd.prData){if(_pd.prData.top)Object.assign(prData.top,_pd.prData.top);if(_pd.prData.pip)Object.assign(prData.pip,_pd.prData.pip);}}catch(e){}
 const _hadState=restoreActiveState();
@@ -2566,5 +2640,34 @@ document.addEventListener('touchstart',()=>{try{ac();}catch(e){}},{once:true});
 
 <!-- CSV TOAST -->
 <div id="csv-toast">💾 Backup CSV salvato<br><span style="opacity:.65;font-size:11px">nella cartella Download</span></div>
+
+<!-- DIALOG CONFERMA -->
+<div id="confirm-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99999;align-items:center;justify-content:center">
+  <div style="background:var(--bg);border-radius:18px;padding:24px;margin:20px;max-width:320px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <div style="font-size:16px;font-weight:800;margin-bottom:8px;color:var(--text)" id="confirm-msg">Sei sicuro?</div>
+    <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px" id="confirm-sub"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="confirmResolve(false)" style="flex:1;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation">Annulla</button>
+      <button onclick="confirmResolve(true)" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--red);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation" id="confirm-ok-btn">Interrompi</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- WU FLOATING BUTTONS -->
+<div id="wu-btn-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9998;padding:10px 16px;background:var(--bg);border-top:1px solid var(--border)">
+  <div style="display:flex;gap:8px;max-width:520px;margin:0 auto">
+    <button ontouchend="event.preventDefault();stopWU()" onclick="stopWU()" style="flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;touch-action:manipulation;cursor:pointer">Interrompi</button>
+    <button ontouchend="event.preventDefault();pauseWU()" onclick="pauseWU()" id="wu-pause-btn" style="flex:1;padding:11px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;touch-action:manipulation;cursor:pointer">⏸ Pausa</button>
+  </div>
+</div>
+<!-- WOD FLOATING BUTTONS — outside all overlays -->
+<div id="wod-btn-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9998;padding:12px 16px;background:var(--bg);border-top:1px solid var(--border);display:none;gap:8px;safe-area-inset-bottom:env(safe-area-inset-bottom)">
+  <div style="display:flex;gap:8px;max-width:520px;margin:0 auto">
+    <button ontouchend="event.preventDefault();closeWodModal()" onclick="closeWodModal()" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;touch-action:manipulation;cursor:pointer">Interrompi</button>
+    <button ontouchend="event.preventDefault();pauseWOD()" onclick="pauseWOD()" id="wm-pause" style="flex:1;padding:12px;border-radius:12px;border:none;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;touch-action:manipulation;cursor:pointer">⏸ Pausa</button>
+    <button ontouchend="event.preventDefault();wodAction()" onclick="wodAction()" id="wm-action" style="flex:1;padding:12px;border-radius:12px;border:none;background:#e8c000;color:#1a1a2e;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;touch-action:manipulation;cursor:pointer">Prossimo →</button>
+  </div>
+</div>
 </body>
 </html>
