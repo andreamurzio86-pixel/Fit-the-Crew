@@ -795,9 +795,14 @@ function finishTraining(){
     exercises:all.map(e=>({
       name:(swappedExs[e.id]?.name)||e.name,
       muscle:e.muscle,
-      done:!!(setSt[e.id]&&setSt[e.id].every(Boolean)),
+      done:!!(setSt.top[e.id]?.every(Boolean)&&setSt.pip[e.id]?.every(Boolean)),
       swapped:!!swappedExs[e.id],
-      sets:e.sets,reps:e.reps
+      sets:e.sets,reps:e.reps,
+      // dati per utente: kg e reps inseriti
+      dataTop:Array.from({length:e.sets},(_,i)=>inputData.top?.[e.id+'-'+i]||null),
+      dataPip:Array.from({length:e.sets},(_,i)=>inputData.pip?.[e.id+'-'+i]||null),
+      doneTop:Array.from({length:e.sets},(_,i)=>!!(setSt.top[e.id]?.[i])),
+      donePip:Array.from({length:e.sets},(_,i)=>!!(setSt.pip[e.id]?.[i])),
     })),note:''
   };
   const m=Math.floor(trainingSec/60),s=trainingSec%60;
@@ -1678,7 +1683,16 @@ function restoreInputData(id,si,user){
 }
 
 function openExModal(id,bi){
-  const d=getDay(),b=d.blocks[bi],e=b?.exs?.find(x=>x.id===id);if(!e)return;
+  const d=getDay(),b=d.blocks[bi];
+  // cerca l'esercizio nel blocco indicato, o in tutti i blocchi come fallback
+  let e=b?.exs?.find(x=>x.id===id);
+  if(!e){
+    for(let i=0;i<d.blocks.length;i++){
+      e=d.blocks[i]?.exs?.find(x=>x.id===id);
+      if(e){bi=i;break;}
+    }
+  }
+  if(!e)return;
   if(!setSt.top[id])setSt.top[id]=Array(e.sets).fill(false);
   if(!setSt.pip[id])setSt.pip[id]=Array(e.sets).fill(false);
   document.getElementById('em-title').textContent=e.name;
@@ -2445,11 +2459,11 @@ function renderStats(){
       </div>`;
     }).join('');
 
-    return`<div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:13px 14px;margin-bottom:9px">
+    return`<div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:13px 14px;margin-bottom:9px" onclick="this.querySelector('.sess-detail').style.display=this.querySelector('.sess-detail').style.display==='none'?'block':'none'">
       <!-- header: data + durata -->
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
         <div>
-          <div style="font-size:13px;font-weight:800">${s.dayName}</div>
+          <div style="font-size:13px;font-weight:800">${s.dayName} <span style="font-size:10px;color:var(--muted);font-weight:600">· tocca per dettagli</span></div>
           <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:1px">${s.date||s.dateISO}</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
@@ -2460,6 +2474,21 @@ function renderStats(){
       <!-- barre gruppi muscolari -->
       ${muscles.length>0?`<div style="margin-top:4px">${muscleTags}</div>`:'<div style="font-size:11px;color:var(--border);font-weight:700">nessun esercizio registrato</div>'}
       ${s.note?`<div style="margin-top:6px;font-size:11px;color:var(--purple);font-weight:700;font-style:italic">💬 ${s.note}</div>`:''}
+      <!-- dettaglio esercizi espandibile -->
+      <div class="sess-detail" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px" onclick="event.stopPropagation()">
+        ${(s.exercises||[]).map(ex=>{
+          const rowsTop=(ex.dataTop||[]).map((d,i)=>d?(ex.doneTop?.[i]?'✓':'·')+' '+(d.kg?d.kg+'kg ':'')+(d.rp?d.rp+'reps':''):'').filter(Boolean);
+          const rowsPip=(ex.dataPip||[]).map((d,i)=>d?(ex.donePip?.[i]?'✓':'·')+' '+(d.kg?d.kg+'kg ':'')+(d.rp?d.rp+'reps':''):'').filter(Boolean);
+          const hasData=rowsTop.length||rowsPip.length;
+          return`<div style="margin-bottom:8px">
+            <div style="font-size:12px;font-weight:800;margin-bottom:3px">${ex.name} <span style="font-size:10px;color:var(--muted);font-weight:600">${ex.sets}×${ex.reps}</span></div>
+            ${hasData?`<div style="display:flex;gap:12px">
+              ${rowsTop.length?`<div style="flex:1"><div style="font-size:9px;font-weight:900;color:var(--red);margin-bottom:2px">TOP</div>${rowsTop.map(r=>`<div style="font-size:11px;font-weight:700;color:var(--text)">${r}</div>`).join('')}</div>`:''}
+              ${rowsPip.length?`<div style="flex:1"><div style="font-size:9px;font-weight:900;color:var(--blue);margin-bottom:2px">PIP</div>${rowsPip.map(r=>`<div style="font-size:11px;font-weight:700;color:var(--text)">${r}</div>`).join('')}</div>`:''}
+            </div>`:`<div style="font-size:11px;color:var(--border);font-weight:600">nessun dato</div>`}
+          </div>`;
+        }).join('')}
+      </div>
     </div>`;
   }).join('')+(sessions.length>16?`<div style="text-align:center;font-size:11px;color:var(--muted);font-weight:700;padding:8px">+${sessions.length-16} sessioni precedenti</div>`:'');
 }
