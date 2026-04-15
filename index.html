@@ -793,12 +793,12 @@ function finishTraining(){
     volumeKg:Math.round(vol),
     wod:getTodayWOD(doy+curDay).name,
     exercises:all.map(e=>({
+      id:e.id,
       name:(swappedExs[e.id]?.name)||e.name,
       muscle:e.muscle,
       done:!!(setSt.top[e.id]?.every(Boolean)&&setSt.pip[e.id]?.every(Boolean)),
       swapped:!!swappedExs[e.id],
       sets:e.sets,reps:e.reps,
-      // dati per utente: kg e reps inseriti
       dataTop:Array.from({length:e.sets},(_,i)=>inputData.top?.[e.id+'-'+i]||null),
       dataPip:Array.from({length:e.sets},(_,i)=>inputData.pip?.[e.id+'-'+i]||null),
       doneTop:Array.from({length:e.sets},(_,i)=>!!(setSt.top[e.id]?.[i])),
@@ -1407,44 +1407,51 @@ function selDay(i){if(trainingOn)return;curDay=i;wuExs=getWuSet(doy+i);document.
 
 function showDoneSession(dayLabel){
   const sessions=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
+  // prende la sessione più recente con quel dayLabel
   const s=sessions.find(x=>x.dayLabel===dayLabel);
   if(!s)return;
   const m=Math.floor(s.durationSec/60),sec=s.durationSec%60;
-  // Mostra riepilogo in un overlay semplice
-  let html=`<div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:4px">✓ ${s.dayName}</div>`;
-  html+=`<div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:14px">${s.date} · ${m}:${sec<10?'0':''}${sec}</div>`;
-  (s.exercises||[]).forEach(ex=>{
-    const hasTop=(ex.dataTop||[]).some(d=>d&&(d.kg||d.rp));
-    const hasPip=(ex.dataPip||[]).some(d=>d&&(d.kg||d.rp));
-    html+=`<div style="margin-bottom:10px;background:var(--warm);border-radius:10px;padding:10px 12px">`;
-    html+=`<div style="font-size:13px;font-weight:800;margin-bottom:6px">${ex.name}</div>`;
-    if(hasTop||hasPip){
-      html+=`<div style="display:flex;gap:12px">`;
-      if(hasTop){
-        html+=`<div style="flex:1"><div style="font-size:9px;font-weight:900;color:var(--red);margin-bottom:3px">TOP</div>`;
-        (ex.dataTop||[]).forEach((d,i)=>{
-          if(d&&(d.kg||d.rp)) html+=`<div style="font-size:12px;font-weight:700">${ex.doneTop?.[i]?'✓':'-'} ${d.kg?d.kg+'kg ':''} ${d.rp?d.rp+' reps':''}</div>`;
+  let html=`<div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:2px">✓ ${s.dayName}</div>`;
+  html+=`<div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:14px">${s.date||s.dateISO} · ${m}:${sec<10?'0':''}${sec} · 🏋️ ${s.volumeKg||0} kg</div>`;
+  const exs=s.exercises||[];
+  if(!exs.length){
+    html+=`<div style="color:var(--muted);font-size:13px">Nessun esercizio registrato in questa sessione.</div>`;
+  } else {
+    exs.forEach(ex=>{
+      const dataTop=ex.dataTop||[];
+      const dataPip=ex.dataPip||[];
+      const hasTop=dataTop.some(d=>d&&(d.kg||d.rp));
+      const hasPip=dataPip.some(d=>d&&(d.kg||d.rp));
+      html+=`<div style="margin-bottom:8px;background:var(--warm);border-radius:10px;padding:10px 12px">`;
+      html+=`<div style="font-size:13px;font-weight:800;margin-bottom:5px">${ex.name} <span style="font-size:10px;color:var(--muted);font-weight:600">${ex.sets||''}×${ex.reps||''}</span></div>`;
+      if(hasTop||hasPip){
+        html+=`<div style="display:flex;gap:16px">`;
+        ['top','pip'].forEach(user=>{
+          const data=user==='top'?dataTop:dataPip;
+          const doneArr=user==='top'?(ex.doneTop||[]):(ex.donePip||[]);
+          const color=user==='top'?'var(--red)':'var(--blue)';
+          const hasData=data.some(d=>d&&(d.kg||d.rp));
+          if(hasData){
+            html+=`<div style="flex:1">`;
+            html+=`<div style="font-size:9px;font-weight:900;color:${color};margin-bottom:3px;text-transform:uppercase">${user}</div>`;
+            data.forEach((d,i)=>{
+              if(!d||(d.kg===''&&d.rp===''))return;
+              const spunta=doneArr[i]?'✓':'·';
+              const val=[d.kg?d.kg+'kg':'',d.rp?d.rp+' reps':''].filter(Boolean).join(' ');
+              html+=`<div style="font-size:13px;font-weight:700;color:${doneArr[i]?'var(--text)':'var(--muted)'}">${spunta} S${i+1}: ${val}</div>`;
+            });
+            html+=`</div>`;
+          }
         });
         html+=`</div>`;
-      }
-      if(hasPip){
-        html+=`<div style="flex:1"><div style="font-size:9px;font-weight:900;color:var(--blue);margin-bottom:3px">PIP</div>`;
-        (ex.dataPip||[]).forEach((d,i)=>{
-          if(d&&(d.kg||d.rp)) html+=`<div style="font-size:12px;font-weight:700">${ex.donePip?.[i]?'✓':'-'} ${d.kg?d.kg+'kg ':''} ${d.rp?d.rp+' reps':''}</div>`;
-        });
-        html+=`</div>`;
+      } else {
+        html+=`<div style="font-size:11px;color:var(--muted);font-style:italic">Nessun dato inserito per questo esercizio</div>`;
       }
       html+=`</div>`;
-    } else {
-      html+=`<div style="font-size:11px;color:var(--muted)">nessun dato inserito</div>`;
-    }
-    html+=`</div>`;
-  });
-  if(s.note) html+=`<div style="font-size:12px;color:var(--purple);font-style:italic;margin-top:4px">💬 ${s.note}</div>`;
-  
-  const box=document.getElementById('done-session-box');
-  const content=document.getElementById('done-session-content');
-  content.innerHTML=html;
+    });
+  }
+  if(s.note) html+=`<div style="font-size:12px;color:var(--purple);font-style:italic;margin-top:6px">💬 ${s.note}</div>`;
+  document.getElementById('done-session-content').innerHTML=html;
   document.getElementById('done-session-ov').classList.add('open');
 }
 
@@ -1719,19 +1726,18 @@ function saveInputData(id,si,user){
   }catch(e){}
 }
 function getLastInput(id,si,user){
-  // prende i dati dall'ultima sessione in cui quell'esercizio è stato fatto
+  // cerca nell'ultima sessione in cui quell'esercizio (per id) è stato fatto
   try{
-    // Prima controlla session history
     const sessions=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
     for(const s of sessions){
-      const ex=(s.exercises||[]).find(e=>e.id===id||e.name===id);
+      const ex=(s.exercises||[]).find(e=>e.id===id);
       if(ex){
         const dataArr=user==='top'?ex.dataTop:ex.dataPip;
         const d=dataArr?.[si];
         if(d&&(d.kg||d.rp))return d;
       }
     }
-    // Fallback: lastinput localStorage
+    // fallback localStorage diretto
     const stored=JSON.parse(localStorage.getItem('ftc_lastinput')||'{}');
     return stored[user]?.[id+'-'+si]||null;
   }catch(e){return null;}
