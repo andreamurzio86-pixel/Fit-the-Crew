@@ -160,7 +160,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .yt-link{display:flex;align-items:center;gap:8px;background:#fff0ec;border:1.5px solid #ffc9b8;border-radius:10px;padding:10px 14px;margin-bottom:14px;text-decoration:none;color:var(--red);font-weight:800;font-size:13px}
 
 /* REST TOAST */
-#rest-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;border-radius:50px;padding:12px 22px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:10px;z-index:300;opacity:0;transition:.3s;white-space:nowrap;pointer-events:all;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+#rest-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;border-radius:50px;padding:12px 22px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:10px;z-index:2000;opacity:0;transition:.3s;white-space:nowrap;pointer-events:all;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.25)}
 #rest-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #rest-num{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#ffa07a}
 
@@ -511,7 +511,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <!-- Bottoni CSV -->
     <div style="display:flex;gap:8px;margin-bottom:14px">
       <button onclick="exportCSV()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation">⬇ Esporta CSV</button>
-      <button onclick="document.getElementById('csv-import-input').click()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation">⬆ Importa CSV</button>
+      <label for="csv-import-input" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation">⬆ Importa CSV</label>
       <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importCSV(this)">
     </div>
 
@@ -1408,7 +1408,13 @@ function selDay(i){if(trainingOn)return;curDay=i;wuExs=getWuSet(doy+i);document.
 function showDoneSession(dayLabel){
   const sessions=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
   // prende la sessione più recente con quel dayLabel
-  const s=sessions.find(x=>x.dayLabel===dayLabel);
+  // Cerca prima nella settimana corrente, poi la più recente
+  const now=new Date();
+  const dow=now.getDay();
+  const monday=new Date(now);monday.setDate(now.getDate()-(dow===0?6:dow-1));monday.setHours(0,0,0,0);
+  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);sunday.setHours(23,59,59,999);
+  let s=sessions.find(x=>x.dayLabel===dayLabel&&new Date(x.dateISO)>=monday&&new Date(x.dateISO)<=sunday);
+  if(!s)s=sessions.find(x=>x.dayLabel===dayLabel);
   if(!s)return;
   const m=Math.floor(s.durationSec/60),sec=s.durationSec%60;
   let html=`<div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:2px">✓ ${s.dayName}</div>`;
@@ -1726,10 +1732,12 @@ function saveInputData(id,si,user){
   }catch(e){}
 }
 function getLastInput(id,si,user){
-  // cerca nell'ultima sessione in cui quell'esercizio (per id) è stato fatto
   try{
     const sessions=JSON.parse(localStorage.getItem('ftc_sessions')||'[]');
-    for(const s of sessions){
+    // cerca l'ultima sessione PASSATA (non oggi) con quell'esercizio
+    const todayISO=new Date().toISOString().slice(0,10);
+    const past=sessions.filter(s=>s.dateISO!==todayISO);
+    for(const s of past){
       const ex=(s.exercises||[]).find(e=>e.id===id);
       if(ex){
         const dataArr=user==='top'?ex.dataTop:ex.dataPip;
@@ -1802,19 +1810,27 @@ function openExModal(id,bi){
       const repsOnly=e.name.toLowerCase().includes('toes')||e.name.toLowerCase().includes('t2b')||e.repsOnly;
       const ltop=getLastInput(id,i,'top');
       const lpip=getLastInput(id,i,'pip');
+      const prevTop=ltop?[(ltop.kg?ltop.kg+'kg':''),ltop.rp?(ltop.rp+' reps'):''].filter(Boolean).join(' · '):'';
+      const prevPip=lpip?[(lpip.kg?lpip.kg+'kg':''),lpip.rp?(lpip.rp+' reps'):''].filter(Boolean).join(' · '):'';
       return`<div class="set-row" style="display:flex;align-items:center;gap:6px">
         <span style="font-size:10px;color:var(--muted);font-weight:800;width:16px;flex-shrink:0">S${i+1}</span>
-        <div style="display:flex;flex-direction:column;gap:3px;flex:1">
+        <div style="display:flex;flex-direction:column;gap:5px;flex:1">
           <div style="display:flex;align-items:center;gap:6px">
-            <span style="font-size:8px;font-weight:900;color:var(--red);width:22px;flex-shrink:0">TOP</span>
-            ${repsOnly?'':`<input class="si" id="skg-top-${id}-${i}" placeholder="${ltop?.kg||'kg'}" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">`}
-            <input class="si" id="srp-top-${id}-${i}" placeholder="${ltop?.rp||'reps'}" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">
+            <div style="display:flex;flex-direction:column;gap:2px;align-items:center">
+              <span style="font-size:8px;font-weight:900;color:var(--red);width:22px;text-align:center">TOP</span>
+              ${prevTop?`<span style="font-size:8px;color:var(--muted);opacity:.7;white-space:nowrap;max-width:50px;overflow:hidden;text-overflow:ellipsis">${prevTop}</span>`:''}
+            </div>
+            ${repsOnly?'':`<input class="si" id="skg-top-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">`}
+            <input class="si" id="srp-top-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'top')">
             <button class="sd ${doneTop?'done':''}" id="sd-top-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'top')">✓</button>
           </div>
           <div style="display:flex;align-items:center;gap:6px">
-            <span style="font-size:8px;font-weight:900;color:var(--blue);width:22px;flex-shrink:0">PIP</span>
-            ${repsOnly?'':`<input class="si" id="skg-pip-${id}-${i}" placeholder="${lpip?.kg||'kg'}" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">`}
-            <input class="si" id="srp-pip-${id}-${i}" placeholder="${lpip?.rp||'reps'}" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">
+            <div style="display:flex;flex-direction:column;gap:2px;align-items:center">
+              <span style="font-size:8px;font-weight:900;color:var(--blue);width:22px;text-align:center">PIP</span>
+              ${prevPip?`<span style="font-size:8px;color:var(--muted);opacity:.7;white-space:nowrap;max-width:50px;overflow:hidden;text-overflow:ellipsis">${prevPip}</span>`:''}
+            </div>
+            ${repsOnly?'':`<input class="si" id="skg-pip-${id}-${i}" placeholder="kg" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">`}
+            <input class="si" id="srp-pip-${id}-${i}" placeholder="reps" type="number" min="0" inputmode="decimal" onchange="onInputUser('${id}',${i},${bi},'pip')">
             <button class="sd ${donePip?'done':''}" id="sd-pip-${id}-${i}" onclick="toggleSet('${id}',${i},${bi},this,'pip')">✓</button>
           </div>
         </div>
