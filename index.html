@@ -3905,15 +3905,19 @@ async function eseguiAggiornamentoSettimanale() {
     renderBollette();
 
     log('<br>🎉 <b>Aggiornamento completato!</b>');
-    btn.textContent = '✅ Chiudi';
-    btn.style.background = '#16a34a';
-    btn.disabled = false;
-    btn.onclick = () => {
+
+    const okBtn = document.getElementById('sw-btn-ok');
+    okBtn.textContent = '✅ Chiudi';
+    okBtn.style.background = '#16a34a';
+    okBtn.disabled = false;
+    okBtn.setAttribute('onclick', '');
+    okBtn.addEventListener('click', function handler() {
       document.getElementById('modalSettimanale').style.display = 'none';
-      btn.textContent = '▶ Avvia Aggiornamento';
-      btn.style.background = 'linear-gradient(135deg,#16a34a,#0d9488)';
-      btn.onclick = () => eseguiAggiornamentoSettimanale();
-    };
+      okBtn.removeEventListener('click', handler);
+      okBtn.textContent = '▶ Avvia Aggiornamento';
+      okBtn.style.background = 'linear-gradient(135deg,#16a34a,#0d9488)';
+      okBtn.setAttribute('onclick', 'eseguiAggiornamentoSettimanale()');
+    }, {once: true});
 
   } catch(e) {
     log('❌ Errore: ' + e.message);
