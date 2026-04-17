@@ -1998,6 +1998,23 @@ function computeConfronto() {
   document.getElementById('confrontoBody').innerHTML=html;
   document.getElementById('emptyConfronto').style.display='none';
   document.getElementById('confrontoContent').style.display='block';
+
+  // Aggiorna KPI produzione per il periodo A (più recente)
+  const MESI_IT=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
+  let kgTot=0, oreTot=0;
+  for (let y=aFromY; y<=aToY; y++) {
+    const mStart = (y===aFromY) ? aFromM : 0;
+    const mEnd   = (y===aToY)   ? aToM   : 11;
+    for (let m=mStart; m<=mEnd; m++) {
+      const prod = PROD_MENSILE.find(r=>r.a===y&&r.m===m+1);
+      if (prod) { kgTot+=prod.kg; oreTot+=prod.ore; }
+    }
+  }
+  if (kgTot > 0) {
+    document.getElementById('dpk-kg').textContent  = kgTot.toLocaleString('it-IT',{maximumFractionDigits:0})+' kg';
+    document.getElementById('dpk-ore').textContent = Math.floor(oreTot).toLocaleString('it-IT')+' h';
+    document.getElementById('dpk-kgh').textContent = (oreTot>0?(kgTot/oreTot).toFixed(2):'—')+' kg/h';
+  }
 }
 
 // ════════════════════════════════════════════════════
