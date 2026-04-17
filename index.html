@@ -1830,24 +1830,38 @@ function populateCmpSelectors() {
               'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
   const MESI_IT=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO',
                  'LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
-  const years=[...new Set(BOLLETTE.map(b=>b.a))].sort();
+
+  // Usa anni dai dati Blindo (più completi delle bollette)
+  const years = allData.length
+    ? [...new Set(allData.map(r=>r.dt.getUTCFullYear()))].sort()
+    : [...new Set(BOLLETTE.map(b=>b.a))].sort();
+
   const mOpts = MESI.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
   const yOpts = years.map(y=>`<option value="${y}">${y}</option>`).join('');
   ['cmpAFromM','cmpAToM','cmpBFromM','cmpBToM'].forEach(id=>{ document.getElementById(id).innerHTML=mOpts; });
   ['cmpAFromY','cmpAToY','cmpBFromY','cmpBToY'].forEach(id=>{ document.getElementById(id).innerHTML=yOpts; });
 
-  // Default: A = stesso periodo anno scorso, B = ultimo mese disponibile
-  const last = BOLLETTE[BOLLETTE.length-1];
-  const lastMIdx = MESI_IT.indexOf(last.m);
-  const prevY = last.a-1;
-  document.getElementById('cmpAFromM').value = lastMIdx;
+  // Default: B = ultimo mese disponibile, A = stesso mese anno precedente
+  let lastY, lastM;
+  if (allData.length) {
+    const lastDt = allData[allData.length-1].dt;
+    lastY = lastDt.getUTCFullYear();
+    lastM = lastDt.getUTCMonth();
+  } else if (BOLLETTE.length) {
+    const last = BOLLETTE[BOLLETTE.length-1];
+    lastY = last.a;
+    lastM = MESI_IT.indexOf(last.m);
+  } else { return; }
+
+  const prevY = lastY - 1;
+  document.getElementById('cmpAFromM').value = lastM;
   document.getElementById('cmpAFromY').value = prevY;
-  document.getElementById('cmpAToM').value   = lastMIdx;
+  document.getElementById('cmpAToM').value   = lastM;
   document.getElementById('cmpAToY').value   = prevY;
-  document.getElementById('cmpBFromM').value = lastMIdx;
-  document.getElementById('cmpBFromY').value = last.a;
-  document.getElementById('cmpBToM').value   = lastMIdx;
-  document.getElementById('cmpBToY').value   = last.a;
+  document.getElementById('cmpBFromM').value = lastM;
+  document.getElementById('cmpBFromY').value = lastY;
+  document.getElementById('cmpBToM').value   = lastM;
+  document.getElementById('cmpBToY').value   = lastY;
 }
 
 function getPeriodRows(fromM, fromY, toM, toY) {
