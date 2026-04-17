@@ -389,6 +389,22 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
       </div>
     </div>
 
+    <!-- ══ KPI PRODUZIONE — sempre visibile ══ -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;" id="dashProdKpi">
+      <div class="qk ok" style="text-align:center;">
+        <div class="qk-val" id="dpk-kg" style="font-size:20px;">—</div>
+        <div class="qk-lbl">Kg Prodotti</div>
+      </div>
+      <div class="qk ok" style="text-align:center;">
+        <div class="qk-val" id="dpk-ore" style="font-size:20px;">—</div>
+        <div class="qk-lbl">Ore Lavorate</div>
+      </div>
+      <div class="qk" style="text-align:center;">
+        <div class="qk-val" id="dpk-kgh" style="font-size:20px;">—</div>
+        <div class="qk-lbl">Kg/Ora</div>
+      </div>
+    </div>
+
     <!-- ══ MODALITÀ SINGOLO ══ -->
     <div id="modeSingolo">
       <div class="filter-bar">
@@ -402,21 +418,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
         <p>Vai su "Gestione Dati" e carica il file TSV</p>
       </div>
       <div id="dashContent" style="display:none">
-        <!-- KPI Produzione -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;" id="dashProdKpi">
-          <div class="qk ok" style="text-align:center;">
-            <div class="qk-val" id="dpk-kg" style="font-size:20px;">—</div>
-            <div class="qk-lbl">Kg Prodotti</div>
-          </div>
-          <div class="qk ok" style="text-align:center;">
-            <div class="qk-val" id="dpk-ore" style="font-size:20px;">—</div>
-            <div class="qk-lbl">Ore Lavorate</div>
-          </div>
-          <div class="qk" style="text-align:center;">
-            <div class="qk-val" id="dpk-kgh" style="font-size:20px;">—</div>
-            <div class="qk-lbl">Kg/Ora</div>
-          </div>
-        </div>
         <div class="riepilogo" id="riepilogo"></div>
         <div class="verifica">
           <div class="ver-left">
@@ -3729,13 +3730,14 @@ function avviaAggiornamentoSettimanale() {
             style="flex:1;padding:11px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;cursor:pointer;font-size:13px;">
             Annulla
           </button>
-          <button onclick="eseguiAggiornamentoSettimanale()" id="sw-btn-ok"
+          <button id="sw-btn-ok"
             style="flex:2;padding:11px;background:linear-gradient(135deg,#16a34a,#0d9488);color:#fff;border:none;border-radius:9px;cursor:pointer;font-size:13px;font-weight:700;">
             ▶ Avvia Aggiornamento
           </button>
         </div>
       </div>`;
     document.body.appendChild(modal);
+    document.getElementById('sw-btn-ok').addEventListener('click', () => eseguiAggiornamentoSettimanale());
 
     // CSS inline per il modale
     const style = document.createElement('style');
@@ -3910,14 +3912,18 @@ async function eseguiAggiornamentoSettimanale() {
     okBtn.textContent = '✅ Chiudi';
     okBtn.style.background = '#16a34a';
     okBtn.disabled = false;
-    okBtn.setAttribute('onclick', '');
-    okBtn.addEventListener('click', function handler() {
+    // Sostituisci il listener con uno che chiude il modale
+    const newBtn = okBtn.cloneNode(true);
+    okBtn.parentNode.replaceChild(newBtn, okBtn);
+    newBtn.addEventListener('click', () => {
       document.getElementById('modalSettimanale').style.display = 'none';
-      okBtn.removeEventListener('click', handler);
-      okBtn.textContent = '▶ Avvia Aggiornamento';
-      okBtn.style.background = 'linear-gradient(135deg,#16a34a,#0d9488)';
-      okBtn.setAttribute('onclick', 'eseguiAggiornamentoSettimanale()');
-    }, {once: true});
+      newBtn.textContent = '▶ Avvia Aggiornamento';
+      newBtn.style.background = 'linear-gradient(135deg,#16a34a,#0d9488)';
+      // Ripristina il listener originale
+      const finalBtn = newBtn.cloneNode(true);
+      newBtn.parentNode.replaceChild(finalBtn, newBtn);
+      finalBtn.addEventListener('click', () => eseguiAggiornamentoSettimanale());
+    });
 
   } catch(e) {
     log('❌ Errore: ' + e.message);
